@@ -9,8 +9,8 @@ This is the primary HackintoiOS device-port target.
 | Field | Current information | Confidence |
 |---|---|---|
 | Manufacturer / product | Motorola Moto G60 Vision | High; Motorola EU declaration |
-| Model | XT2135-2 | High; Motorola EU declaration |
-| Android device codename | hanoip | High for the Moto G40/G60 device family; exact target-unit confirmation still desirable |
+| Model | XT2135-2 | High; confirmed on the target phone in Settings → About phone |
+| Android device codename | hanoip | High for the Moto G40/G60 device family; exact target-unit codename not independently read |
 | Qualcomm platform tree name | sm6150 | High; shared Motorola device-tree BoardConfig |
 | Marketing SoC | Snapdragon 732G; commonly identified as SM7150-AC | Medium; verify against the target unit's reported hardware |
 | GPU | Adreno 618 | Medium; family specification, verify exact board |
@@ -28,7 +28,7 @@ This is the primary HackintoiOS device-port target.
 - Shared platform BoardConfig: https://github.com/motorola-sm6150-devs/android_device_motorola_sm6150-common/blob/lineage-20/BoardConfigCommon.mk
 - Kernel source tree: https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/tree/lineage-20
 - Target defconfig: https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/blob/lineage-20/arch/arm64/configs/vendor/hanoip_defconfig
-- Pinned kernel source commit: `5b04fac0cb2a8311ae69c8644384426e838d91fe`
+- Pinned kernel source commit: `5b04fac0cb2a8311ae69e8644384426e838d91fe`
 
 The community kernel source is a baseline reference, not an original HackintoiOS kernel. Its license and notices must remain intact. The initial HackintoiOS configuration fragment changes only the build's local version label.
 
@@ -44,6 +44,7 @@ The community kernel source is a baseline reference, not an original HackintoiOS
 ## Milestones
 
 - [x] Identify Motorola model XT2135-2.
+- [x] Confirm the target phone reports XT2135-2 in Settings → About phone.
 - [x] Identify the hanoip device-family tree and matching defconfig.
 - [x] Locate a public ARM64 kernel source baseline.
 - [ ] Confirm exact target-unit SoC, board revision, and firmware build.
