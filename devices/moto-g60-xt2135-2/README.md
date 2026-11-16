@@ -1,8 +1,8 @@
 # Moto G60 Vision — XT2135-2
 
-**Status: kernel baseline identified; CI build is being established. Not a bootable HackintoiOS port.**
+**Status: research scaffold only. Kernel baseline identified; CI build is being established. Not a bootable HackintoiOS port.**
 
-This is the primary HackintoiOS device-port target.
+This is the primary HackintoiOS device-port target. There is no HackintoiOS kernel implementation yet; the current kernel work is a Linux reference build only.
 
 ## Target identity
 
@@ -21,7 +21,7 @@ This is the primary HackintoiOS device-port target.
 | GPU | Adreno 618 | Medium; family specification, verify exact board |
 | Kernel base | Motorola SM6150-family Linux 4.14.326 community source tree | High for the referenced source branch |
 | Device kernel config | `vendor/hanoip_defconfig` | High; present in the referenced kernel tree |
-| Bootloader / partition details | Not yet independently verified for XT2135-2 | Open |
+| Bootloader / partition details | Not yet verified for XT2135-2 | Open |
 | RAM/storage configuration | Not yet verified for target unit | Open |
 
 **Important naming distinction:** `sm6150` is the platform name used by the shared Android device/kernel tree. It must not be confused with the marketing SoC identifier. The device-family specifications identify the Snapdragon 732G. Do not infer register maps or silicon revisions from the tree name alone.
