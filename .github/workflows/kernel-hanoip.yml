@@ -1,4 +1,4 @@
-name: Moto G60 kernel baseline
+name: Moto G60 Linux kernel reference build
 
 on:
   push:
@@ -19,7 +19,7 @@ permissions:
 
 jobs:
   build-hanoip:
-    name: Build ARM64 hanoip kernel baseline
+    name: Build ARM64 hanoip Linux reference kernel
     runs-on: ubuntu-22.04
     timeout-minutes: 90
     steps:
@@ -40,7 +40,7 @@ jobs:
       - name: Upload compile outputs (not a flashable image)
         uses: actions/upload-artifact@v4
         with:
-          name: hackintoiOS-hanoip-kernel-build
+          name: moto-g60-hanoip-linux-reference-kernel
           if-no-files-found: error
           path: |
             out/hanoip/arch/arm64/boot/Image.gz
