@@ -1,48 +1,57 @@
-# Moto G60 — XT2135-2
+# Moto G60 Vision — XT2135-2
 
-**Status: research scaffold only. Not bootable. No device-specific kernel configuration exists yet.**
+**Status: kernel baseline identified; CI build is being established. Not a bootable HackintoiOS port.**
 
-This is the primary HackintoiOS device-port target. The directory deliberately starts with documentation rather than guessed boot settings or copied configuration from another phone.
+This is the primary HackintoiOS device-port target.
 
 ## Target identity
 
 | Field | Current information | Confidence |
 |---|---|---|
-| Manufacturer / product | Motorola Moto G60 | Model-family identification |
-| Model | XT2135-2 | Confirmed target model |
-| SoC | Qualcomm Snapdragon 732G (SM7150-AC family) | Reported by public device specifications; verify on the actual unit |
-| GPU | Qualcomm Adreno 618 | Reported; verify against the exact board revision |
-| Board / platform codename | Not yet verified | Open |
-| Bootloader and partition layout | Not yet documented | Open |
-| Device-tree source and revision | Not yet identified | Open |
+| Manufacturer / product | Motorola Moto G60 Vision | High; Motorola EU declaration |
+| Model | XT2135-2 | High; Motorola EU declaration |
+| Android device codename | hanoip | High for the Moto G40/G60 device family; exact target-unit confirmation still desirable |
+| Qualcomm platform tree name | sm6150 | High; shared Motorola device-tree BoardConfig |
+| Marketing SoC | Snapdragon 732G; commonly identified as SM7150-AC | Medium; verify against the target unit's reported hardware |
+| GPU | Adreno 618 | Medium; family specification, verify exact board |
+| Kernel base | Motorola SM6150-family Linux 4.14.326 community source tree | High for the referenced source branch |
+| Device kernel config | `vendor/hanoip_defconfig` | High; present in the referenced kernel tree |
+| Bootloader / partition details | Not yet independently verified for XT2135-2 | Open |
 | RAM/storage configuration | Not yet verified for target unit | Open |
 
-Do not treat reported SoC details as sufficient to select a kernel target. Exact board identity, device-tree compatibility, boot image format, bootloader behavior, and firmware dependencies must be established independently.
+**Important naming distinction:** `sm6150` is the platform name used by the shared Android device/kernel tree. It must not be confused with the marketing SoC identifier. The device-family specifications identify the Snapdragon 732G. Do not infer register maps or silicon revisions from the tree name alone.
+
+## Source references
+
+- Motorola EU declaration identifies XT2135-2 as Moto G60 Vision: https://en-us.support.motorola.com/ci/fattach/get/79315385/1664922506/redirect/1/filename/XT2135-2_Moto%2BG60%2BVision%2BMC38C%2BRED%2BDoC.pdf
+- Community Android device tree for Moto G40 Fusion / Moto G60 (hanoip): https://github.com/motorola-sm6150-devs/android_device_motorola_hanoip
+- Shared platform BoardConfig: https://github.com/motorola-sm6150-devs/android_device_motorola_sm6150-common/blob/lineage-20/BoardConfigCommon.mk
+- Kernel source tree: https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/tree/lineage-20
+- Target defconfig: https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/blob/lineage-20/arch/arm64/configs/vendor/hanoip_defconfig
+- Pinned kernel source commit: `5b04fac0cb2a8311ae69c8644384426e838d91fe`
+
+The community kernel source is a baseline reference, not an original HackintoiOS kernel. Its license and notices must remain intact. The initial HackintoiOS configuration fragment changes only the build's local version label.
 
 ## Porting principles
 
-1. Keep all Moto G60-specific material in this directory.
-2. Record source URLs, revisions, and verification status for every hardware claim.
-3. Do not copy HakiOS's POCO X5 Pro / SC7280 device configuration. The Moto G60 is a different platform.
-4. Do not add fabricated addresses, register maps, firmware blobs, partition offsets, or boot arguments.
-5. Keep early work to source inspection, reproducible builds, static checks, and emulator tests.
-6. Never describe a generated artifact as bootable until it has passed appropriate device-specific validation.
+1. Keep Moto G60-specific configuration and notes in this directory.
+2. Preserve upstream source attribution and GPL-2.0 obligations for kernel-derived work.
+3. Do not copy HakiOS's POCO X5 Pro / SC7280 device configuration.
+4. Do not invent addresses, register maps, firmware blobs, partition offsets, or boot arguments.
+5. Treat a successful compile as a compile result only—not proof of hardware compatibility.
+6. Do not create or publish a flash-ready image until the exact boot chain, image format, and device variant have been independently validated.
 
 ## Milestones
 
-- [ ] Verify exact board/platform identity from trustworthy device evidence.
-- [ ] Identify the matching device-tree source and license.
-- [ ] Document boot-chain and image-format requirements from authoritative sources.
-- [ ] Map required hardware blocks and existing open drivers.
-- [ ] Define a minimal, reviewable device configuration.
-- [ ] Build the HackintoiOS kernel target in CI.
-- [ ] Add automated tests for configuration and packaging.
-- [ ] Establish a safe, independently reviewed hardware validation plan.
+- [x] Identify Motorola model XT2135-2.
+- [x] Identify the hanoip device-family tree and matching defconfig.
+- [x] Locate a public ARM64 kernel source baseline.
+- [ ] Confirm exact target-unit SoC, board revision, and firmware build.
+- [ ] Complete a reproducible kernel compile in GitHub Actions.
+- [ ] Add HackintoiOS-specific kernel patches beyond the build-label fragment.
+- [ ] Map device-tree and driver dependencies.
+- [ ] Establish a safe, independently reviewed hardware-validation plan.
 
 ## Current build status
 
-There is no HackintoiOS kernel implementation or Moto G60 boot image in this directory yet. The repository's initial CI checks documentation and device-profile consistency only. Passing those checks does not compile a kernel, emulate the phone, or establish bootability.
-
-## Research log
-
-Add dated entries to [the project research log](../../docs/research-log.md). Prefer primary sources such as Motorola documentation, Linux device-tree sources, Qualcomm documentation, and upstream driver code.
+The repository now contains a reproducible build script and CI workflow for the referenced hanoip kernel baseline. Until GitHub Actions completes successfully, the kernel build remains unverified. Even after a successful compile, the output is not a boot image and is not confirmed bootable on XT2135-2.
