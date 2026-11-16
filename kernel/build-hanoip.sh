@@ -30,6 +30,9 @@ if [ "$actual_commit" != "$KERNEL_COMMIT" ]; then
 fi
 
 export ARCH=arm64
+# This 4.14 tree does not infer CC=clang from LLVM=1; select Clang explicitly.
+export CC=clang
+export LD=ld.lld
 export LLVM=1
 export LLVM_IAS=1
 
