@@ -1,0 +1,48 @@
+name: Moto G60 kernel baseline
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "kernel/**"
+      - "devices/moto-g60-xt2135-2/**"
+      - ".github/workflows/kernel-hanoip.yml"
+  pull_request:
+    paths:
+      - "kernel/**"
+      - "devices/moto-g60-xt2135-2/**"
+      - ".github/workflows/kernel-hanoip.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-hanoip:
+    name: Build ARM64 hanoip kernel baseline
+    runs-on: ubuntu-22.04
+    timeout-minutes: 90
+    steps:
+      - name: Check out HackintoiOS
+        uses: actions/checkout@v4
+
+      - name: Install kernel build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y bc bison build-essential clang-14 flex libelf-dev libssl-dev lld-14 llvm-14 python3
+
+      - name: Build pinned hanoip kernel source
+        env:
+          PATH: /usr/lib/llvm-14/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+          JOBS: "2"
+        run: ./kernel/build-hanoip.sh
+
+      - name: Upload compile outputs (not a flashable image)
+        uses: actions/upload-artifact@v4
+        with:
+          name: hackintoiOS-hanoip-kernel-build
+          if-no-files-found: error
+          path: |
+            out/hanoip/arch/arm64/boot/Image.gz
+            out/hanoip/arch/arm64/boot/dts/**/*.dtb
+            out/hanoip/.config
