@@ -1,0 +1,4 @@
+# HackintoiOS build identity.
+# This does not add hardware support or change the inherited device drivers.
+CONFIG_LOCALVERSION="-hackintoiOS"
+# CONFIG_LOCALVERSION_AUTO is not set
