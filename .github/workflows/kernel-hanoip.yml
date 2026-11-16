@@ -35,7 +35,7 @@ jobs:
         env:
           PATH: /usr/lib/llvm-14/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
           JOBS: "2"
-        run: ./kernel/build-hanoip.sh
+        run: bash ./kernel/build-hanoip.sh
 
       - name: Upload compile outputs (not a flashable image)
         uses: actions/upload-artifact@v4
