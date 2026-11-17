@@ -1,0 +1,34 @@
+name: XNU research documentation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/xnu/**"
+      - "tools/check-xnu-research.py"
+      - ".github/workflows/xnu-research.yml"
+  pull_request:
+    paths:
+      - "docs/xnu/**"
+      - "tools/check-xnu-research.py"
+      - ".github/workflows/xnu-research.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  research-docs:
+    name: Validate XNU research documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Validate research documentation
+        run: python tools/check-xnu-research.py
