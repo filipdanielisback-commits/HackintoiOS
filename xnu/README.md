@@ -30,14 +30,18 @@ Do not apply HackintoiOS's own license to Apple-covered files in a way that over
 
 The upstream README uses `macosx.internal` in its example commands. The public-runner probe deliberately tests the public SDK instead; failure may indicate that the upstream build expects additional Apple-internal build inputs.
 
-## HANOIP platform map
+## HANOIP platform evidence
 
-See [platform-porting-map.md](../docs/xnu/platform-porting-map.md) for the first source-tree and device-evidence map. It records confirmed upstream directory locations separately from unknown device requirements; it is not a driver implementation or boot plan.
+- [Platform porting map](../docs/xnu/platform-porting-map.md) maps relevant XNU source areas to the still-open HANOIP porting tasks.
+- [HANOIP device-tree evidence audit](../docs/xnu/hanoip-device-tree-audit.md) records facts found in the public Motorola Linux DTS and defconfig, while explicitly separating those facts from the unknown retail bootloader handoff and board-overlay selection.
+
+These are research documents, not a driver implementation, verified boot contract, or boot plan.
 
 ## Next engineering gates
 
 1. Verify upstream licensing and exact build prerequisites for this revision.
 2. Reproduce an upstream-supported XNU build in a compatible environment before changing kernel code.
-3. Identify the platform initialization, interrupt, timer, memory, and boot interfaces needed for a non-Apple ARM64 target.
-4. Design HANOIP-specific changes only after those interfaces are understood.
-5. Keep the existing Linux reference-kernel workflow separate from XNU work.
+3. Establish the actual HANOIP bootloader handoff and firmware-matched memory map; Linux DTS data is only a reference.
+4. Identify the platform initialization, interrupt, timer, memory, and boot interfaces needed for a non-Apple ARM64 target.
+5. Design HANOIP-specific changes only after those interfaces are understood.
+6. Keep the existing Linux reference-kernel workflow separate from XNU work.
