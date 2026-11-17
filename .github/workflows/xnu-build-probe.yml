@@ -1,0 +1,66 @@
+name: XNU upstream build probe
+
+on:
+  push:
+    branches:
+      - xnu/initial-source-integration
+    paths:
+      - "xnu/**"
+      - ".github/workflows/xnu-build-probe.yml"
+  pull_request:
+    paths:
+      - "xnu/**"
+      - ".github/workflows/xnu-build-probe.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  arm64-build-probe:
+    # This is a toolchain/prerequisite experiment, not a Moto G60 build.
+    runs-on: macos-14
+    timeout-minutes: 45
+    steps:
+      - name: Check out HackintoiOS metadata
+        uses: actions/checkout@v4
+
+      - name: Read pinned upstream revision
+        id: pin
+        shell: bash
+        run: |
+          set -euo pipefail
+          source xnu/upstream.lock
+          echo "repository=$repository" >> "$GITHUB_OUTPUT"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "commit=$commit" >> "$GITHUB_OUTPUT"
+
+      - name: Fetch pinned Apple XNU source
+        shell: bash
+        env:
+          REPOSITORY: ${{ steps.pin.outputs.repository }}
+          TAG: ${{ steps.pin.outputs.tag }}
+          COMMIT: ${{ steps.pin.outputs.commit }}
+        run: |
+          set -euo pipefail
+          git clone --filter=blob:none --no-checkout "$REPOSITORY" xnu-src
+          git -C xnu-src fetch --depth=1 origin "refs/tags/$TAG:refs/tags/$TAG"
+          test "$(git -C xnu-src rev-parse "$TAG^{commit}")" = "$COMMIT"
+          git -C xnu-src checkout --detach "$COMMIT"
+
+      - name: Inspect public macOS SDK and compiler
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcode-select -p
+          xcrun --find clang
+          xcrun --sdk macosx --show-sdk-path
+
+      - name: Attempt upstream ARM64 DEVELOPMENT kernel build
+        working-directory: xnu-src
+        shell: bash
+        run: |
+          set -o pipefail
+          SDKROOT="$(xcrun --sdk macosx --show-sdk-path)"
+          echo "Using public SDK: $SDKROOT"
+          make -j2 SDKROOT="$SDKROOT" ARCH_CONFIGS=ARM64 KERNEL_CONFIGS=DEVELOPMENT
