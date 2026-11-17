@@ -38,6 +38,8 @@ export LD=ld.lld
 export LLVM=1
 export LLVM_IAS=1
 
+bash "$ROOT/kernel/check-hanoip-wifi.sh" "$KERNEL_DIR"
+
 make -C "$KERNEL_DIR" O="$OUT_DIR" vendor/hanoip_defconfig
 "$KERNEL_DIR/scripts/kconfig/merge_config.sh" -m -O "$OUT_DIR" \
   "$OUT_DIR/.config" "$ROOT/kernel/hackintoiOS.fragment"
