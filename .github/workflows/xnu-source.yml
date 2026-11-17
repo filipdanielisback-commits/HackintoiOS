@@ -1,0 +1,53 @@
+name: XNU upstream source verification
+
+on:
+  push:
+    branches: [main, xnu/initial-source-integration]
+    paths:
+      - "xnu/**"
+      - ".github/workflows/xnu-source.yml"
+  pull_request:
+    paths:
+      - "xnu/**"
+      - ".github/workflows/xnu-source.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-upstream:
+    name: Verify pinned Apple XNU source
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out HackintoiOS
+        uses: actions/checkout@v4
+
+      - name: Read pinned upstream revision
+        id: pin
+        shell: bash
+        run: |
+          set -euo pipefail
+          source xnu/upstream.lock
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "commit=$commit" >> "$GITHUB_OUTPUT"
+
+      - name: Fetch pinned upstream source
+        run: |
+          git clone --filter=blob:none --no-checkout https://github.com/apple-oss-distributions/xnu.git /tmp/apple-xnu
+          git -C /tmp/apple-xnu fetch --depth=1 origin "refs/tags/${{ steps.pin.outputs.tag }}:refs/tags/${{ steps.pin.outputs.tag }}"
+          git -C /tmp/apple-xnu checkout --detach "${{ steps.pin.outputs.tag }}"
+
+      - name: Verify exact upstream commit and ARM64 source layout
+        env:
+          EXPECTED_COMMIT: ${{ steps.pin.outputs.commit }}
+        run: |
+          set -euo pipefail
+          actual="$(git -C /tmp/apple-xnu rev-parse HEAD)"
+          test "$actual" = "$EXPECTED_COMMIT"
+          test -f /tmp/apple-xnu/README.md
+          test -d /tmp/apple-xnu/osfmk/arm
+          test -d /tmp/apple-xnu/pexpert
+          grep -q "ARM64" /tmp/apple-xnu/README.md
+          echo "Verified Apple XNU source at $actual"
+          echo "This workflow verifies source identity and layout only; it does not build XNU."
