@@ -16,10 +16,15 @@ on:
 permissions:
   contents: read
 
+# Keep a queued macOS probe from being cancelled by a newer push.
+concurrency:
+  group: xnu-build-probe-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   arm64-build-probe:
     # This is a toolchain/prerequisite experiment, not a Moto G60 build.
-    runs-on: macos-14
+    runs-on: macos-latest
     timeout-minutes: 45
     steps:
       - name: Check out HackintoiOS metadata
