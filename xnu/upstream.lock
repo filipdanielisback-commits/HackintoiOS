@@ -1,0 +1,5 @@
+repository=https://github.com/apple-oss-distributions/xnu.git
+tag=xnu-11215.1.10
+commit=8d741a5de7ff4191bf97d57b9f54c2f6d4a15585
+darwin_family=24
+status=upstream-reference-only
