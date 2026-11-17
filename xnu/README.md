@@ -30,6 +30,10 @@ Do not apply HackintoiOS's own license to Apple-covered files in a way that over
 
 The upstream README uses `macosx.internal` in its example commands. The public-runner probe deliberately tests the public SDK instead; failure may indicate that the upstream build expects additional Apple-internal build inputs.
 
+## HANOIP platform map
+
+See [platform-porting-map.md](../docs/xnu/platform-porting-map.md) for the first source-tree and device-evidence map. It records confirmed upstream directory locations separately from unknown device requirements; it is not a driver implementation or boot plan.
+
 ## Next engineering gates
 
 1. Verify upstream licensing and exact build prerequisites for this revision.
