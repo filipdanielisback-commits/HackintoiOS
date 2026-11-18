@@ -1,0 +1,75 @@
+name: XNU upstream baseline
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "xnu/**"
+      - "docs/xnu/**"
+      - ".github/workflows/xnu-upstream-baseline.yml"
+  pull_request:
+    paths:
+      - "xnu/**"
+      - "docs/xnu/**"
+      - ".github/workflows/xnu-upstream-baseline.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-upstream:
+    name: Verify pinned Apple XNU source
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out HackintoiOS
+        uses: actions/checkout@v4
+
+      - name: Verify lock file
+        shell: bash
+        run: |
+          set -euo pipefail
+          source_repo="$(sed -n 's/^repository=//p' xnu/upstream.lock)"
+          source_tag="$(sed -n 's/^tag=//p' xnu/upstream.lock)"
+          expected_commit="$(sed -n 's/^commit=//p' xnu/upstream.lock)"
+          test "$source_repo" = "https://github.com/apple-oss-distributions/xnu.git"
+          test "$source_tag" = "xnu-11215.1.10"
+          test "$expected_commit" = "8d741a5de7ff4191bf97d57b9f54c2f6d4a15585"
+          test -s xnu/patches/series
+          echo "Pinned source: $source_repo"
+          echo "Pinned tag: $source_tag"
+          echo "Expected commit: $expected_commit"
+
+      - name: Fetch and verify exact upstream tag
+        shell: bash
+        run: |
+          set -euo pipefail
+          source_repo="$(sed -n 's/^repository=//p' xnu/upstream.lock)"
+          source_tag="$(sed -n 's/^tag=//p' xnu/upstream.lock)"
+          expected_commit="$(sed -n 's/^commit=//p' xnu/upstream.lock)"
+          git init /tmp/xnu-upstream
+          git -C /tmp/xnu-upstream remote add origin "$source_repo"
+          git -C /tmp/xnu-upstream fetch --depth=1 origin "refs/tags/$source_tag"
+          git -C /tmp/xnu-upstream checkout --detach FETCH_HEAD
+          actual_commit="$(git -C /tmp/xnu-upstream rev-parse HEAD)"
+          test "$actual_commit" = "$expected_commit"
+          test -s /tmp/xnu-upstream/APPLE_LICENSE
+          test -s /tmp/xnu-upstream/README.md
+          {
+            echo "repository=$source_repo"
+            echo "tag=$source_tag"
+            echo "expected_commit=$expected_commit"
+            echo "actual_commit=$actual_commit"
+            echo "apple_license=present"
+            echo "source_readme=present"
+            echo "result=PASS"
+            echo "scope=source-integrity-only; no XNU compilation or device test"
+          } | tee xnu-upstream-baseline-report.txt
+
+      - name: Upload source verification report
+        uses: actions/upload-artifact@v4
+        with:
+          name: hackintoios-xnu-upstream-baseline
+          path: xnu-upstream-baseline-report.txt
+          if-no-files-found: error
+          retention-days: 14
