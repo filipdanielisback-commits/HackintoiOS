@@ -40,7 +40,7 @@ QEMU_STATUS=$?
 set -e
 
 cat "$WORK/console.log"
-if grep -Fq "This is an experimental AArch64 UEFI app." "$WORK/console.log"; then
+if grep -Fq "HackintoiOS - UEFI development" "$WORK/console.log"; then
   echo "PASS: UEFI firmware launched HackintoiOSLoader.efi in QEMU."
   exit 0
 fi
