@@ -2,47 +2,54 @@
 
 **Experimental operating-system research for the Motorola Moto G60 (XT2135-2).**
 
-HackintoiOS investigates the architectural and engineering challenges involved in studying Darwin and the open-source XNU kernel on non-Apple ARM64 hardware. The project is in the **research and early scaffolding stage**.
+HackintoiOS investigates the engineering work required to run a genuine iOS 18.7.12-derived Darwin user-space environment on the Moto G60 Vision. The project's **official long-term end goal** is to boot that environment on the exact XT2135-2 target using an independently developed HANOIP-compatible XNU, loader, platform configuration, and drivers.
 
-> **Project status:** No working iOS port, bootable Moto G60 image, or validated Moto G60 XNU drivers exist. The repository now includes an original host-built userland smoke test; this is not a Darwin runtime.
+This is an ambitious research goal, not a claim of current compatibility or guaranteed success. The project is in the research and early scaffolding stage.
 
-## Goals
+> **Current status:** No working iOS port, bootable Moto G60 image, HANOIP XNU implementation, or validated Moto G60 XNU drivers exist. Existing Linux kernel and UEFI checks are separate prototypes and do not establish phone boot support.
 
-- Document the Moto G60 platform and its publicly documented hardware.
-- Study ARM64 boot concepts and the Android device boot chain at a high level.
-- Explore the architecture and build requirements of the open-source XNU and Darwin components.
-- Record hardware compatibility questions for CPU, GPU, Wi-Fi, audio, camera, storage, power, touchscreen, and haptics.
-- Develop a transparent, reproducible documentation and build-scaffolding workflow.
-- Keep third-party code, licenses, and provenance clearly documented.
-
-## Device target
+## Official target
 
 | Item | Value |
 | --- | --- |
 | Device | Motorola Moto G60 Vision |
 | Model | XT2135-2 |
 | Device family | HANOIP |
-| Current project phase | Research and early scaffolding |
+| User-space research target | iOS 18.7.12, build 22H390 |
+| Restore-image reference | iPhone XR, product iPhone11,8 |
+| Current project phase | Architecture, source-version verification, and early scaffolding |
 
-Hardware details will be added only when verified against reliable documentation or measurements. See [device research](devices/moto-g60-xt2135-2/README.md) and the [hardware bring-up tracker](devices/moto-g60-xt2135-2/hardware-status.md).
+The iPhone XR restore image is a research reference, not a Moto G60 firmware image. Its device-specific components are not assumed to work on HANOIP. The current XNU pin was selected for the original iOS 18.0 / Darwin 24.0.0 research baseline and must be checked against the exact 18.7.12 build before it is treated as final.
+
+See the [HakiOS-informed porting plan](docs/architecture/PORTING_PLAN.md), [device research](devices/moto-g60-xt2135-2/README.md), and the [hardware bring-up tracker](devices/moto-g60-xt2135-2/hardware-status.md).
+
+## Goals
+
+- Build an original XNU/loader/platform stack for the Moto G60, guided by evidence from its HANOIP device family.
+- Study and implement the required ARM64 boot and kernel handoff interfaces.
+- Develop original, independently tested hardware support for the target device.
+- Investigate compatibility with the iOS 18.7.12-derived Darwin user-space environment.
+- Use QEMU and GitHub Actions for repeatable development and regression tests.
+- Keep third-party code, licenses, source provenance, and test results clearly documented.
+- Distinguish verified facts, hypotheses, build results, emulation results, and physical-device results.
 
 ## Repository layout
 
 ```text
 .
-├── bootloader/       # UEFI application prototype and notes
+├── bootloader/       # AArch64 UEFI application prototype and boot-chain research
 ├── devices/          # Moto G60 target profile and hardware status
-├── docs/             # Architecture, roadmap and research notes
+├── docs/             # Architecture, porting plan and research notes
 ├── drivers/          # Planned XNU-facing driver work; none implemented yet
 ├── kernel/           # Linux reference-kernel build, not XNU
-├── sysimage/         # Safe IPSW archive-inspection tools
+├── sysimage/         # Safe IPSW archive-inspection and metadata tools
 ├── userland/         # Original host smoke test and userland research
 └── xnu/              # Pinned upstream XNU research baseline and patch manifest
 ```
 
 ## Build status
 
-The project has separate checks for the Linux reference kernel, XNU source-baseline integrity, sysimage tooling, UEFI prototype and the initial host userland smoke test. A successful check proves only what that workflow tests; it does not establish that XNU boots on the phone.
+The project has separate checks for the Linux reference kernel, XNU source-baseline integrity, sysimage tooling, UEFI prototype and host userland smoke test. A successful check proves only what that workflow tests; it does not establish that XNU boots on the phone.
 
 Run the documentation and host userland checks:
 
@@ -59,7 +66,8 @@ The userland smoke test compiles with the host C compiler and runs on the CI hos
 - Apple's complete iOS source code and many device-specific components are proprietary. This project does not claim to recreate or distribute them.
 - XNU and other open-source components retain their own upstream licenses. The repository's MIT license applies only to original project material that the maintainer has the right to license.
 - Do not commit proprietary firmware, IPSW contents, signing material, credentials, or files whose redistribution rights are unclear.
-- HakiOS and other projects are references for learning, not proof that their device configurations or patches work on the Moto G60.
+- HakiOS and other projects are architectural references, not proof that their device configurations or patches work on the Moto G60. See the [porting plan](docs/architecture/PORTING_PLAN.md).
+- Do not flash unverified images, replace device firmware, or bypass device security controls as part of this research.
 - No Apple affiliation or endorsement is claimed. Apple, iOS, Darwin, and related marks belong to their respective owners.
 
 ## Contributing
