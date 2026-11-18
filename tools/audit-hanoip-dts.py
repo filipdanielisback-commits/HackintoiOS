@@ -25,12 +25,12 @@ def read_text(root: Path, relative: Path) -> str:
 
 
 def property_value(source: str, name: str) -> str | None:
-    match = re.search(rf"^\\s*{re.escape(name)}\\s*=\\s*(.+?);", source, re.MULTILINE)
+    match = re.search(rf"^\s*{re.escape(name)}\s*=\s*(.+?);", source, re.MULTILINE)
     return match.group(1).strip() if match else None
 
 
 def include_names(source: str) -> list[str]:
-    return re.findall(r'^\s*#include\\s+"([^"]+)"', source, re.MULTILINE)
+    return re.findall(r'^\s*#include\s+"([^"]+)"', source, re.MULTILINE)
 
 
 def audit(root: Path, source_commit: str) -> dict:
@@ -48,7 +48,7 @@ def audit(root: Path, source_commit: str) -> dict:
     variants = {}
     for name, (overlay_name, camera_name) in VARIANTS.items():
         overlay = read_text(root, QCOM_DTS / overlay_name)
-        camera = read_text(root, QCOM_DTS / camera_name)
+        read_text(root, QCOM_DTS / camera_name)
         board_id = property_value(overlay, "qcom,board-id")
         msm_id = property_value(overlay, "qcom,msm-id")
         model = property_value(overlay, "model")
@@ -61,6 +61,8 @@ def audit(root: Path, source_commit: str) -> dict:
             raise ValueError(f"{name} overlay does not include its matching camera overlay")
         if camera_name not in makefile:
             raise ValueError(f"{name} camera overlay is not referenced by the audited Makefile")
+        if overlay_name.replace(".dts", ".dtbo") not in makefile:
+            raise ValueError(f"{name} HANOIP overlay is not referenced by the audited Makefile")
         variants[name] = {
             "overlay": overlay_name,
             "camera_overlay": camera_name,
@@ -122,7 +124,7 @@ def main() -> int:
         print(f"HANOIP DTS audit failed: {exc}", file=sys.stderr)
         return 1
 
-    rendered = json.dumps(report, indent=2, sort_keys=True) + "\\n"
+    rendered = json.dumps(report, indent=2, sort_keys=True) + "\n"
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(rendered, encoding="utf-8")
