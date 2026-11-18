@@ -1,6 +1,6 @@
 # Boot-chain research and UEFI prototype
 
-**Status: early AArch64 UEFI application; QEMU execution test is being added. This is not a Moto G60 phone bootloader.**
+**Status: early AArch64 UEFI application; build and QEMU validation are pending. This is not a Moto G60 phone bootloader.**
 
 This directory tracks the target device's boot architecture and develops a safe, isolated UEFI prototype.
 
@@ -9,8 +9,8 @@ This directory tracks the target device's boot architecture and develops a safe,
 - `HackintoiOSLoader.efi` is an AArch64 UEFI application.
 - It displays a simple text menu using the UEFI console.
 - It accepts UEFI console key input for a basic menu demonstration.
-- GitHub Actions builds the application and validates its ARM64 PE/COFF format.
-- A separate QEMU test attempts to launch the application under emulated AArch64 UEFI firmware.
+- GitHub Actions is configured to build the application, validate its ARM64 PE/COFF format, and launch it under emulated AArch64 UEFI firmware.
+- The latest earlier UEFI build stopped because the module was not registered in the selected EDK II platform description. The workflow now generates a CI-only platform description overlay to register it; that correction still needs a successful run.
 
 ## What a successful QEMU test means
 
@@ -27,12 +27,11 @@ It demonstrates only that the UEFI application can be launched by the selected e
 
 ## Next milestones
 
-1. Build and validate the AArch64 UEFI application in CI.
-2. Run it under QEMU's AArch64 UEFI firmware and capture its console output.
-3. Research the XT2135-2 boot stages from trustworthy, device-specific sources.
-4. Define a non-destructive, device-specific feasibility assessment. Do not attempt firmware replacement or security bypass.
-5. Separately inspect the genuine iPhone XR iOS 18.7.12 IPSW and record verified filesystem metadata. Keep Apple firmware payloads out of this repository.
-6. Only after the boot and compatibility interfaces are evidenced, investigate a test-kernel handoff.
+1. Get the isolated AArch64 UEFI application building and passing its QEMU test in CI.
+2. Research the XT2135-2 boot stages from trustworthy, device-specific sources.
+3. Define a non-destructive, device-specific feasibility assessment. Do not attempt firmware replacement or security bypass.
+4. Separately inspect the genuine iPhone XR iOS 18.7.12 IPSW and record verified filesystem metadata. Keep Apple firmware payloads out of this repository.
+5. Only after the boot and compatibility interfaces are evidenced, investigate a test-kernel handoff.
 
 ## Research checklist
 
