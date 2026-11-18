@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Audit the pinned HANOIP device-tree sources without building or touching a device."""
+"""Audit pinned HANOIP device-tree sources and their quoted-include closure."""
 
 from __future__ import annotations
 
@@ -33,6 +33,58 @@ def include_names(source: str) -> list[str]:
     return re.findall(r'^\s*#include\s+"([^"]+)"', source, re.MULTILINE)
 
 
+def audit_include_closure(root: Path, entries: list[Path]) -> dict:
+    """Walk quoted includes, staying inside the checked-out kernel tree."""
+    root = root.resolve()
+    visited: set[Path] = set()
+    graph: dict[str, list[str]] = {}
+    missing: set[str] = set()
+    unsafe: set[str] = set()
+
+    def visit(relative: Path) -> None:
+        candidate = (root / relative).resolve()
+        try:
+            candidate.relative_to(root)
+        except ValueError:
+            unsafe.add(relative.as_posix())
+            return
+        key = candidate.relative_to(root).as_posix()
+        if candidate in visited or not candidate.is_file():
+            if not candidate.is_file():
+                missing.add(key)
+            return
+        visited.add(candidate)
+        names = include_names(candidate.read_text(encoding="utf-8"))
+        resolved_names: list[str] = []
+        graph[key] = resolved_names
+        for name in names:
+            local = (candidate.parent / name).resolve()
+            fallback = (root / QCOM_DTS / name).resolve()
+            target = local if local.is_file() else fallback
+            try:
+                target.relative_to(root)
+            except ValueError:
+                unsafe.add(name)
+                continue
+            target_key = target.relative_to(root).as_posix()
+            resolved_names.append(target_key)
+            if target.is_file():
+                visit(Path(target_key))
+            else:
+                missing.add(target_key)
+
+    for entry in entries:
+        visit(entry)
+
+    return {
+        "files_scanned": sorted(p.relative_to(root).as_posix() for p in visited),
+        "include_graph": dict(sorted(graph.items())),
+        "missing_quoted_includes": sorted(missing),
+        "unsafe_include_paths": sorted(unsafe),
+        "complete": not missing and not unsafe,
+    }
+
+
 def audit(root: Path, source_commit: str) -> dict:
     makefile = read_text(root, QCOM_DTS / "Makefile")
     soc = read_text(root, QCOM_DTS / "sdmmagpie.dtsi")
@@ -46,6 +98,7 @@ def audit(root: Path, source_commit: str) -> dict:
         raise ValueError("shared SoC interrupt-parent differs from the audited value")
 
     variants = {}
+    entries = [QCOM_DTS / "sdmmagpie.dtsi", QCOM_DTS / "sdmmagpie-hanoip-common-overlay.dtsi"]
     for name, (overlay_name, camera_name) in VARIANTS.items():
         overlay = read_text(root, QCOM_DTS / overlay_name)
         read_text(root, QCOM_DTS / camera_name)
@@ -61,6 +114,7 @@ def audit(root: Path, source_commit: str) -> dict:
             raise ValueError(f"{name} overlay does not include its matching camera overlay")
         if overlay_name.replace(".dts", ".dtbo") not in makefile:
             raise ValueError(f"{name} HANOIP overlay is not referenced by the audited Makefile")
+        entries.extend([QCOM_DTS / overlay_name, QCOM_DTS / camera_name])
         variants[name] = {
             "overlay": overlay_name,
             "camera_overlay": camera_name,
@@ -82,8 +136,9 @@ def audit(root: Path, source_commit: str) -> dict:
     if missing:
         raise ValueError("HANOIP common overlay is missing expected includes: " + ", ".join(missing))
 
+    include_audit = audit_include_closure(root, entries)
     return {
-        "schema": 1,
+        "schema": 2,
         "source_repository": "motorola-sm6150-devs/android_kernel_motorola_sm6150",
         "source_branch": "lineage-20",
         "source_commit": source_commit or "not-supplied",
@@ -99,9 +154,10 @@ def audit(root: Path, source_commit: str) -> dict:
             "includes": common_includes,
         },
         "engineering_variants": variants,
+        "recursive_include_audit": include_audit,
         "exact_xt2135_2_board_revision": "unknown",
         "limitations": [
-            "This is a source-text audit, not a compiled or merged device tree.",
+            "This is a source-text include audit, not a compiled or merged device tree.",
             "Engineering overlay IDs do not identify which overlay matches a particular XT2135-2 unit.",
             "Linux device-tree properties are hardware evidence, not XNU configuration or drivers.",
             "No phone, firmware, partition, or boot configuration is accessed or changed.",
