@@ -9,7 +9,8 @@ This is a long-term engineering target, not a claim that the target is currently
 - Phone: Motorola Moto G60 Vision, model XT2135-2; device family HANOIP.
 - iOS reference: iOS 18.7.12, build 22H390, from the iPhone XR (iPhone11,8) restore family.
 - The iPhone XR restore image is a source of research metadata and user-space compatibility evidence. It is not a Moto G60 firmware image, and its device-specific firmware, kernel configuration, or boot chain must not be assumed to work on HANOIP.
-- The existing XNU pin `xnu-11215.1.10` was selected for the original iOS 18.0 / Darwin 24.0.0 research baseline. It is **not yet approved as the final 18.7.12 kernel baseline**. Verify the exact Darwin/XNU build relationship before changing the pin.
+- Darwin 24.6.0 is the best-supported kernel family for this release. Public XNU tag `xnu-11417.140.69`, peeled commit `43a90889846e00bfb5cf1d255cdc0a701a1e05a4`, is a family-matched candidate; exact build 22H390 correspondence remains unconfirmed. See [version mapping](../xnu/ios-18.7.12-version.md).
+- The previous pin `xnu-11215.1.10` is from the iOS 18.0 / Darwin 24.0.0 generation and is not the final target baseline.
 
 ## What HakiOS demonstrates
 
@@ -29,14 +30,14 @@ HakiOS documents a working POCO X5 Pro 5G (`redwood`) target and QEMU. Its phone
 
 | Area | What exists | What is still missing |
 |---|---|---|
-| XNU | Pinned upstream research reference; empty patch series | Verified 18.7.12-compatible baseline, original HANOIP changes, reproducible relevant build |
+| XNU | Pinned upstream research reference; public Darwin 24.6.0 candidate resolved | Exact 22H390 kernel build string, approved final lockfile pin, original HANOIP changes, reproducible relevant build |
 | Linux reference kernel | HANOIP Linux source/build workflow | This is not XNU and cannot substitute for it |
 | Bootloader | Basic AArch64 UEFI console application and artifact checks | Real loader protocol, kernel loading/handoff, device integration |
 | Firmware | Research notes and UEFI prototype | Verified, suitable HANOIP firmware path; availability is unknown |
 | Device/SoC | XT2135-2 profile, HANOIP family and source references | Verified device tree, board revision, resource map and subsystem evidence |
 | Drivers | Hardware research notes | Original, individually tested XNU-facing drivers |
 | Darwin user space | IPSW inspection/indexing tools and host smoke-test scaffolding | Verified filesystem metadata and a compatible startup environment; no proprietary payloads in this repository |
-| QEMU | UEFI prototype test being established | A meaningful open-kernel/loader test platform and automated regression coverage |
+| QEMU | **In progress:** AArch64 UEFI prototype and QEMU test path | Confirmed repeatable pass, then an open kernel/loader handoff and regression coverage |
 | CI | Separate documentation, Linux, XNU-baseline, sysimage and UEFI checks | End-to-end tests that prove each added capability without overstating what they prove |
 
 ## Implementation sequence
@@ -70,6 +71,7 @@ HakiOS documents a working POCO X5 Pro 5G (`redwood`) target and QEMU. Its phone
 - Separate SoC-wide facts from phone-specific board facts.
 - Document memory, interrupt, timer, storage, display, input, power, and firmware dependencies.
 - Do not invent addresses, interrupts, pin assignments, or boot arguments.
+- Follow the [HANOIP-specific kernel work plan](HANOIP_KERNEL_PLAN.md) for the proposed source boundaries and evidence gates.
 
 **Done when:** every platform value used by code has a traceable source and unknowns remain explicitly disabled.
 
