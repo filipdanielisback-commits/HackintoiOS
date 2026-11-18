@@ -30,7 +30,7 @@ def property_value(source: str, name: str) -> str | None:
 
 
 def include_names(source: str) -> list[str]:
-    return re.findall(r'^\\s*#include\\s+"([^"]+)"', source, re.MULTILINE)
+    return re.findall(r'^\s*#include\\s+"([^"]+)"', source, re.MULTILINE)
 
 
 def audit(root: Path, source_commit: str) -> dict:
