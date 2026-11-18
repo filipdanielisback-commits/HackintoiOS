@@ -15,7 +15,7 @@ import stat
 import sys
 from pathlib import Path
 
-from listing import entries
+from slt_parser import entries
 
 
 def main() -> int:
