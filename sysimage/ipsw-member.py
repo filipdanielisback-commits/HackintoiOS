@@ -1,16 +1,62 @@
 #!/usr/bin/env python3
-"""List or extract a named member from an IPSW ZIP archive."""
+"""List IPSW ZIP members or safely stream one named member to disk."""
 from __future__ import annotations
+
 import argparse
+import os
 import sys
+import tempfile
 import zipfile
 from pathlib import Path, PurePosixPath
 
+
 def safe_member_name(name: str) -> str:
-    member = PurePosixPath(name)
-    if member.is_absolute() or ".." in member.parts or not member.parts:
+    normalized = name.replace("\\\\", "/")
+    member = PurePosixPath(normalized)
+    if (member.is_absolute() or ".." in member.parts or not member.parts
+            or (member.parts and ":" in member.parts[0])):
         raise ValueError(f"unsafe archive member path: {name!r}")
     return str(member)
+
+
+def extract_member(archive: zipfile.ZipFile, name: str, output: Path) -> int:
+    safe_name = safe_member_name(name)
+    matches = [info for info in archive.infolist() if info.filename == safe_name]
+    if not matches:
+        print(f"error: member not found: {safe_name}", file=sys.stderr)
+        return 2
+    if len(matches) != 1:
+        print(f"error: archive contains duplicate member names: {safe_name}", file=sys.stderr)
+        return 2
+    info = matches[0]
+    if info.is_dir():
+        print("error: selected member is a directory", file=sys.stderr)
+        return 2
+    if info.flag_bits & 0x1:
+        print("error: encrypted ZIP members are not supported", file=sys.stderr)
+        return 2
+
+    output = output.resolve()
+    output.parent.mkdir(parents=True, exist_ok=True)
+    fd, temporary_name = tempfile.mkstemp(prefix=f".{output.name}.", suffix=".part",
+                                          dir=output.parent)
+    try:
+        with os.fdopen(fd, "wb") as target, archive.open(info, "r") as source:
+            while chunk := source.read(1024 * 1024):
+                target.write(chunk)
+            target.flush()
+            os.fsync(target.fileno())
+        os.replace(temporary_name, output)
+    except Exception:
+        try:
+            os.unlink(temporary_name)
+        except FileNotFoundError:
+            pass
+        raise
+
+    print(f"extracted {safe_name}: {info.file_size} bytes -> {output}")
+    return 0
+
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -23,6 +69,7 @@ def main() -> int:
     extraction.add_argument("member")
     extraction.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
+
     if not args.ipsw.is_file():
         parser.error(f"IPSW file does not exist: {args.ipsw}")
     try:
@@ -32,25 +79,11 @@ def main() -> int:
                     if args.prefix is None or info.filename.startswith(args.prefix):
                         print(f"{info.file_size:>12}  {info.filename}")
                 return 0
-            member = safe_member_name(args.member)
-            try:
-                info = archive.getinfo(member)
-            except KeyError:
-                print(f"error: member not found: {member}", file=sys.stderr)
-                return 2
-            if info.is_dir():
-                print("error: selected member is a directory", file=sys.stderr)
-                return 2
-            output = args.output.resolve()
-            output.parent.mkdir(parents=True, exist_ok=True)
-            with archive.open(info, "r") as source, output.open("wb") as target:
-                while chunk := source.read(1024 * 1024):
-                    target.write(chunk)
-            print(f"extracted {member} -> {output}")
-            return 0
-    except (OSError, zipfile.BadZipFile, ValueError) as exc:
-        print(f"error: {exc}", file=sys.stderr)
+            return extract_member(archive, args.member, args.output)
+    except (OSError, zipfile.BadZipFile, ValueError, RuntimeError) as exc:
+        print(f"ipsw-member: {exc}", file=sys.stderr)
         return 1
+
 
 if __name__ == "__main__":
     raise SystemExit(main())
