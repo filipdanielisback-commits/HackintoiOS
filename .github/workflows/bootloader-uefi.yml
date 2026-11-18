@@ -6,11 +6,13 @@ on:
     paths:
       - "bootloader/**"
       - "tools/check-uefi-artifact.py"
+      - "tools/test-uefi-qemu.sh"
       - ".github/workflows/bootloader-uefi.yml"
   pull_request:
     paths:
       - "bootloader/**"
       - "tools/check-uefi-artifact.py"
+      - "tools/test-uefi-qemu.sh"
       - ".github/workflows/bootloader-uefi.yml"
   workflow_dispatch:
 
@@ -19,13 +21,13 @@ permissions:
 
 jobs:
   build-aarch64-uefi:
-    name: Build AArch64 UEFI application
+    name: Build and QEMU-test AArch64 UEFI application
     runs-on: ubuntu-24.04
     steps:
       - name: Check out HackintoiOS
         uses: actions/checkout@v4
 
-      - name: Install cross-compilation dependencies
+      - name: Install build and emulation dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y \
@@ -34,7 +36,9 @@ jobs:
             uuid-dev \
             nasm \
             acpica-tools \
-            python3
+            python3 \
+            qemu-system-arm \
+            qemu-efi-aarch64
 
       - name: Check out EDK II
         uses: actions/checkout@v4
@@ -76,6 +80,9 @@ jobs:
           mkdir -p dist
           cp "$EFI_FILE" dist/HackintoiOSLoader.efi
           python3 tools/check-uefi-artifact.py dist/HackintoiOSLoader.efi
+
+      - name: Execute UEFI application in QEMU
+        run: bash tools/test-uefi-qemu.sh dist/HackintoiOSLoader.efi
 
       - name: Upload UEFI application
         uses: actions/upload-artifact@v4
