@@ -40,7 +40,7 @@ These are proposed boundaries, not a requirement to create empty directories imm
 
 ### A. Evidence inventory — first
 
-Collect and cross-check public XT2135-2/HANOIP device-tree sources, kernel source, defconfig, module lists, board identifiers, and firmware release metadata. Build a resource inventory with columns for subsystem, identifier/value, source URL/path, source revision, confidence, and unresolved questions.
+Collect and cross-check public XT2135-2/HANOIP device-tree sources, kernel source, defconfig, module lists, board identifiers, and firmware release metadata. The initial [source-backed HANOIP resource inventory](HANOIP_RESOURCE_INVENTORY.md) now records the SDMMAGPIE shared SoC tree and the HANOIP EVT1/DVT1/DVT2 overlays. The [automated DTS audit](../../tools/audit-hanoip-dts.py) and its CI workflow check these pinned source files and publish a JSON evidence report. Continue the recursive overlay audit and determine which engineering variant matches the exact XT2135-2 unit before using board-specific values. Build a resource inventory with columns for subsystem, identifier/value, source URL/path, source revision, confidence, and unresolved questions.
 
 Minimum domains:
 
@@ -96,7 +96,7 @@ Only after the QEMU handoff and HANOIP resource inventory are mature should the 
 ## Current blockers
 
 - Exact XNU build suffix for iOS 18.7.12 build 22H390 remains unconfirmed.
-- Exact board revision and complete XT2135-2 hardware resource map remain incomplete.
+- Exact XT2135-2 board revision/overlay match and complete hardware resource map remain incomplete. The initial source audit is not yet a merged-DTB or XNU implementation.
 - UEFI availability and the target firmware handoff contract are unverified.
 - No HANOIP XNU platform code or validated Moto G60 XNU drivers exist.
 
