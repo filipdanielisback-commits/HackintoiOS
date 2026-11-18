@@ -1,43 +1,37 @@
-# Boot-chain research and UEFI prototype
+# Boot-chain research and UEFI development prototype
 
-**Status: early AArch64 UEFI application; build and QEMU validation are pending. This is not a Moto G60 phone bootloader.**
+**Status: AArch64 UEFI application with a basic menu and firmware-environment report. It is not a Moto G60 phone bootloader and does not load XNU.**
 
-This directory tracks the target device's boot architecture and develops a safe, isolated UEFI prototype.
+## Current implementation
 
-## Current prototype
+- EDK II UEFI application targeting AArch64.
+- Interactive UEFI console menu.
+- Reports firmware vendor/revision, configuration-table count, and availability of console and boot-services interfaces.
+- Reports the HANOIP target and explicitly marks native UEFI and device integration as unverified.
+- GitHub Actions builds the EFI executable, checks its PE/COFF architecture, and launches it under emulated AArch64 UEFI firmware.
 
-- `HackintoiOSLoader.efi` is an AArch64 UEFI application.
-- It displays a simple text menu using the UEFI console.
-- It accepts UEFI console key input for a basic menu demonstration.
-- GitHub Actions is configured to build the application, validate its ARM64 PE/COFF format, and launch it under emulated AArch64 UEFI firmware.
-- The latest earlier UEFI build stopped because the module was not registered in the selected EDK II platform description. The workflow now generates a CI-only platform description overlay to register it; that correction still needs a successful run.
+## Development boundary
 
-## What a successful QEMU test means
-
-It demonstrates only that the UEFI application can be launched by the selected emulated firmware. It does **not** establish that the Moto G60 provides UEFI, that Motorola's boot chain can launch this application, or that XNU can boot.
+The current QEMU `virt` machine is a development harness, not a hardware model of the Moto G60. A successful QEMU run proves only that the application runs under that emulated firmware. It does not establish compatibility with Motorola firmware or the XT2135-2 boot chain.
 
 ## Not implemented
 
-- No Moto G60 / HANOIP firmware integration.
-- No replacement for Motorola's existing bootloader.
-- No XNU kernel loading or handoff.
-- No physical Power/Volume button handling.
-- No Moto G60 display, touchscreen, battery, charging, or GPU drivers.
-- No flashing or installation image.
+- HANOIP-specific firmware integration or a Moto G60 boot image.
+- XNU kernel loading, memory-map preparation for XNU, or kernel handoff.
+- Device-tree/ACPI platform handoff for HANOIP.
+- Display, touchscreen, storage, Wi-Fi, audio, power, or thermal drivers.
+- APFS filesystem support.
+- A phone-installable or flashable image.
 
-## Next milestones
+## Next engineering milestones
 
-1. Get the isolated AArch64 UEFI application building and passing its QEMU test in CI.
-2. Research the XT2135-2 boot stages from trustworthy, device-specific sources.
-3. Define a non-destructive, device-specific feasibility assessment. Do not attempt firmware replacement or security bypass.
-4. Separately inspect the genuine iPhone XR iOS 18.7.12 IPSW and record verified filesystem metadata. Keep Apple firmware payloads out of this repository.
-5. Only after the boot and compatibility interfaces are evidenced, investigate a test-kernel handoff.
+1. Keep the UEFI application building and passing the QEMU smoke test.
+2. Add deterministic tests for its firmware report and error handling where feasible.
+3. Document the XT2135-2 boot architecture from trustworthy source evidence without attempting firmware replacement or security bypass.
+4. Establish an XNU build-and-boot experiment in QEMU independently of phone support.
+5. Design a HANOIP platform interface only from verified board and firmware facts.
+6. Treat Android boot-image packaging as a later, separately validated artifact format—not as proof of device bootability.
 
-## Research checklist
+## Safety and compatibility
 
-- [ ] Find reliable documentation for the XT2135-2 boot stages.
-- [ ] Record verified-boot and bootloader-lock constraints.
-- [ ] Document the kernel handoff format only when supported by evidence.
-- [ ] Keep experiments non-destructive and separate from normal device use.
-
-Do not flash this `.efi` file or treat it as a phone-installable image. This project does not provide instructions for bypassing device security or flashing unverified images.
+Do not flash this EFI application or any generated image to a phone. This project does not provide instructions for bypassing device security, unlocking protected boot stages, or flashing unverified firmware. All current execution tests remain in CI/QEMU.
