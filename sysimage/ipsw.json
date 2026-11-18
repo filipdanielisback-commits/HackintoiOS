@@ -1,0 +1,16 @@
+{
+  "device_name": "iPhone XR",
+  "product_type": "iPhone11,8",
+  "board_id": "n841ap",
+  "ios_version": "18.7.12",
+  "build": "22H390",
+  "filename": "iPhone11,8_18.7.12_22H390_Restore.ipsw",
+  "size_bytes": 8683812309,
+  "sha256": "3b5c21c4dcf50df3f0865e6f3737a5cc47c929fbe595c05e18dc7074032dc759",
+  "ipsw_me_device_url": "https://ipsw.me/iPhone11%2C8/",
+  "ipsw_me_version_url": "https://ipsw.me/download/iPhone11%2C8/22H390/",
+  "apple_hosted": true,
+  "signing_status_checked": "2026-11-18",
+  "signing_status_at_check": "signed",
+  "repository_policy": "metadata-only; do not commit the IPSW or extracted firmware"
+}
