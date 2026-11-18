@@ -1,11 +1,12 @@
 # Sysimage research tools
 
-This directory contains original, minimal tools for inspecting a user-supplied Apple IPSW and preparing a local variable-data directory skeleton. The layout is inspired by the general workflow used by other open-source projects; these scripts are independently written for HackintoiOS.
+HackintoiOS has an original, staged IPSW inspection pipeline. Its directory layout is inspired by a common research workflow, but the scripts here are independently written. We do not copy HakiOS implementation code or its iPhone X / iOS 16.5-specific filtering rules.
 
-## Pinned research target
+## Pinned IPSW research target
 
 - Device: iPhone XR
 - Product identifier: `iPhone11,8`
+- Board identifier: `n841ap`
 - iOS version: `18.7.12`
 - Build: `22H390`
 - IPSW filename: `iPhone11,8_18.7.12_22H390_Restore.ipsw`
@@ -13,19 +14,36 @@ This directory contains original, minimal tools for inspecting a user-supplied A
 - Version page: https://ipsw.me/download/iPhone11%2C8/22H390/
 - SHA-256: `3b5c21c4dcf50df3f0865e6f3737a5cc47c929fbe595c05e18dc7074032dc759`
 
-The IPSW is approximately 8.1 GiB. It is **not** stored in this repository and CI does not download it. Signing status is time-sensitive; check the IPSW.me page again before any restore operation.
+IPSW.me lists this 8.1 GiB image as signed at the time of the last check. Signing can change. The IPSW is not stored in this repository and CI never downloads it.
 
-## Tools
+## Pipeline
 
-- `ipsw-member.py`: list IPSW ZIP members or extract one named member safely.
-- `select-system.py`: inspect `BuildManifest.plist` and select the iPhone XR build identity, then report its OS image member path.
-- `mkvarskel.py`: create a basic, empty local `private/var` directory skeleton for later research.
-- `unpack.sh`: inspect a local IPSW, extract its build manifest and selected OS image member into a caller-chosen output directory.
+1. `ipsw-member.py` lists archive members or safely streams one named member to a local file. Writes are atomic; duplicate names, encrypted members, and traversal paths are rejected.
+2. `select-system.py` validates the build and product identity in `BuildManifest.plist`. It can list all named image components or select one component (default: `OS`).
+3. `unpack.sh` extracts the build manifest and selected OS component. This is archive extraction only; it does not decrypt or install firmware.
+4. If the extracted image is readable by a compatible 7-Zip build, create a technical listing:
+   `7z l -slt path/to/image > rootfs.slt`
+5. `rootfs-index.py` converts a 7-Zip technical listing into JSON Lines containing normalized paths, file types, modes, owners, sizes and symlink targets.
+6. `mkvarskel.py` emits a tab-separated directory/symlink manifest for entries under `/private/var`, using metadata found in the listing rather than guessed permissions.
 
-The unpacker only extracts the selected archive member as stored in the IPSW. It does not decrypt, bypass signing, defeat device security, modify firmware, or install/restore anything. The extracted image may remain encrypted.
+Example commands:
 
-## Scope and limitations
+```sh
+python3 sysimage/ipsw-member.py list /path/to/iPhone11,8_18.7.12_22H390_Restore.ipsw
+bash sysimage/unpack.sh /path/to/iPhone11,8_18.7.12_22H390_Restore.ipsw ./work/ios18-xr
+python3 sysimage/select-system.py ./work/ios18-xr/metadata/BuildManifest.plist --list-components
+7z l -slt ./work/ios18-xr/payload/ROOTFS_IMAGE.dmg > ./work/rootfs.slt
+python3 sysimage/rootfs-index.py ./work/rootfs.slt --output ./work/rootfs-index.jsonl
+python3 sysimage/mkvarskel.py ./work/rootfs.slt --output ./work/var.skel
+```
 
-These utilities are for local metadata and archive inspection. They do not provide an iOS user space, a working Darwin system, an activation mechanism, or a bootable image. They do not make the iPhone XR IPSW compatible with the Motorola Moto G60 (XT2135-2). The iPhone XR is a separate Apple-device reference target for studying the iOS 18.7.12 restore-image layout.
+Replace `ROOTFS_IMAGE.dmg` with the actual member name printed by the selector. The image may be encrypted or unsupported by the installed archive tools; the later listing steps are conditional, not guaranteed.
+
+## What this does not do
+
+- It does not decrypt an IPSW, bypass signing, defeat device security, or perform a restore.
+- It does not create a bootable iOS system or a complete Darwin user space.
+- It does not prove that the iPhone XR image can run on the Motorola Moto G60 (XT2135-2).
+- It does not yet filter a complete iOS 18.7.12 root filesystem into a minimal bootable image. Such filtering needs evidence from this exact build, not rules copied from a different phone and OS version.
 
 Do not commit IPSW files, extracted Apple binaries, personal device data, or other copyrighted firmware payloads to this repository.
