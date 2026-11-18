@@ -1,13 +1,12 @@
 # HackintoiOS XNU patches
 
-This directory is reserved for HackintoiOS-authored patches against the exact upstream revision in [../upstream.lock](../upstream.lock).
+This directory contains original HackintoiOS patch files against the exact upstream revision in [../upstream.lock](../upstream.lock).
 
-No functional XNU patches are included yet. Do not add placeholder patches that claim hardware support. Each future patch should document:
+## Rules
 
-- the upstream files and revision it changes;
-- the reason the change is needed;
-- whether it is generic ARM64 work or HANOIP-specific;
-- how it is validated;
-- known limitations and whether it has been tested on physical hardware.
-
-Keep patches reviewable and preserve upstream copyright and license notices.
+- Add a patch only for a specific, evidence-backed HANOIP requirement.
+- Keep patches small and independently reviewable.
+- Record the reason, affected subsystem, upstream files, and test evidence in each patch description.
+- Never copy a HakiOS/POCO-specific patch and assume it applies to HANOIP.
+- Run the patch-series check against the pinned source before proposing a patch.
+- No functional patch is currently included. Do not interpret the empty series as a patched or ported kernel.
