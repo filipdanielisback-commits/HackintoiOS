@@ -65,35 +65,21 @@ jobs:
         run: |
           set -eo pipefail
           source edksetup.sh
-          # A module passed with -m must also be listed in the selected DSC.
-          # Generate a CI-only platform overlay; do not modify upstream EDK II.
+          # The module must be registered in the platform DSC before -m can build it.
+          # Generate a CI-only overlay; leave the pinned upstream EDK II tree unchanged.
           cp ArmVirtPkg/ArmVirtQemu.dsc ArmVirtPkg/HackintoiOSQemu.dsc
-          grep -q '^\\[Components.common\\]
-            -a AARCH64 \
-            -t GCC5 \
-            -b RELEASE
-
-      - name: Locate and validate EFI application
-        run: |
-          set -euxo pipefail
-          EFI_FILE="$(find edk2/Build -type f -name HackintoiOSLoader.efi -print -quit)"
-          test -n "$EFI_FILE"
-          mkdir -p dist
-          cp "$EFI_FILE" dist/HackintoiOSLoader.efi
-          python3 tools/check-uefi-artifact.py dist/HackintoiOSLoader.efi
-
-      - name: Execute UEFI application in QEMU
-        run: bash tools/test-uefi-qemu.sh dist/HackintoiOSLoader.efi
-
-      - name: Upload UEFI application
-        uses: actions/upload-artifact@v4
-        with:
-          name: hackintoiOS-aarch64-uefi-prototype
-          path: dist/HackintoiOSLoader.efi
-          if-no-files-found: error
-          retention-days: 14
- ArmVirtPkg/HackintoiOSQemu.dsc
-          sed -i '/^\\[Components.common\\]$/a ../bootloader/uefi/HackintoiOSLoader.inf' ArmVirtPkg/HackintoiOSQemu.dsc
+          python3 - <<'PY'
+          from pathlib import Path
+          dsc = Path("ArmVirtPkg/HackintoiOSQemu.dsc")
+          text = dsc.read_text(encoding="utf-8")
+          marker = "[Components.common]\n"
+          module = "../bootloader/uefi/HackintoiOSLoader.inf\n"
+          if marker not in text:
+              raise SystemExit("ArmVirtQemu.dsc has no [Components.common] section")
+          if module not in text:
+              text = text.replace(marker, marker + module, 1)
+          dsc.write_text(text, encoding="utf-8")
+          PY
           build \
             -p ArmVirtPkg/HackintoiOSQemu.dsc \
             -m ../bootloader/uefi/HackintoiOSLoader.inf \
