@@ -59,6 +59,18 @@ class HanoipDtsAuditTests(unittest.TestCase):
             self.assertEqual(set(report["engineering_variants"]), {"evt1", "dvt1", "dvt2"})
             self.assertEqual(report["exact_xt2135_2_board_revision"], "unknown")
 
+    def test_recursive_include_audit_follows_nested_files_and_reports_missing(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            qcom = root / "arch/arm64/boot/dts/qcom"
+            qcom.mkdir(parents=True)
+            (qcom / "entry.dts").write_text('#include "nested.dtsi"\\n', encoding="utf-8")
+            (qcom / "nested.dtsi").write_text('#include "absent.dtsi"\\n', encoding="utf-8")
+            result = MODULE.audit_include_closure(root, [Path("arch/arm64/boot/dts/qcom/entry.dts")])
+            self.assertIn("arch/arm64/boot/dts/qcom/nested.dtsi", result["files_scanned"])
+            self.assertEqual(result["missing_quoted_includes"], ["arch/arm64/boot/dts/qcom/absent.dtsi"])
+            self.assertFalse(result["complete"])
+
     def test_rejects_wrong_board_model(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
