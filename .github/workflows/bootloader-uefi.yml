@@ -57,7 +57,7 @@ jobs:
           source edksetup.sh
           build \
             -p ArmVirtPkg/ArmVirtQemu.dsc \
-            -m ../HackintoiOS/bootloader/uefi/HackintoiOSLoader.inf \
+            -m ../bootloader/uefi/HackintoiOSLoader.inf \
             -a AARCH64 \
             -t GCC5 \
             -b RELEASE
