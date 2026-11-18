@@ -42,7 +42,13 @@ jobs:
           repository: tianocore/edk2
           ref: edk2-stable202405
           path: edk2
-          submodules: recursive
+          submodules: false
+
+      - name: Initialize EDK II build submodules
+        working-directory: edk2
+        run: |
+          set -euxo pipefail
+          git submodule update --init --recursive -- . ':(exclude)UnitTestFrameworkPkg/Library/SubhookLib/subhook'
 
       - name: Build EDK II BaseTools
         working-directory: edk2
