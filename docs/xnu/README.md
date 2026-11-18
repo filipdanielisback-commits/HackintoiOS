@@ -13,7 +13,7 @@
 
 ## Version baseline
 
-The initial research baseline is Apple's XNU tag `xnu-11215.1.10`, pinned to commit `8d741a5de7ff4191bf97d57b9f54c2f6d4a15585`. It is associated with the iOS 18.0 / Darwin 24.0.0 version family. CI checks the upstream tag-to-commit mapping; this is a source-integrity check, not an XNU build or a device compatibility result.
+The original research pin `xnu-11215.1.10` (commit `8d741a5de7ff4191bf97d57b9f54c2f6d4a15585`) belongs to the iOS 18.0 / Darwin 24.0.0 generation and is too old to call the final iOS 18.7.12 baseline. Research now identifies Darwin `24.6.0` as the iOS 18.7.12 kernel version family and `xnu-11417.140.69` as a public upstream candidate. The exact XNU build suffix for build `22H390` remains unconfirmed, so the lockfile has deliberately not been changed yet. See [the version-mapping report](ios-18.7.12-version.md).
 
 ## Important boundaries
 
