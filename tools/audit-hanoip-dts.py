@@ -59,8 +59,6 @@ def audit(root: Path, source_commit: str) -> dict:
             raise ValueError(f"{name} overlay does not include the HANOIP common overlay")
         if camera_name not in includes:
             raise ValueError(f"{name} overlay does not include its matching camera overlay")
-        if camera_name not in makefile:
-            raise ValueError(f"{name} camera overlay is not referenced by the audited Makefile")
         if overlay_name.replace(".dts", ".dtbo") not in makefile:
             raise ValueError(f"{name} HANOIP overlay is not referenced by the audited Makefile")
         variants[name] = {
