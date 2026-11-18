@@ -13,7 +13,15 @@
 
 ## Version baseline
 
-The original research pin `xnu-11215.1.10` (commit `8d741a5de7ff4191bf97d57b9f54c2f6d4a15585`) belongs to the iOS 18.0 / Darwin 24.0.0 generation and is too old to call the final iOS 18.7.12 baseline. Research now identifies Darwin `24.6.0` as the iOS 18.7.12 kernel version family and `xnu-11417.140.69` as a public upstream candidate. The exact XNU build suffix for build `22H390` remains unconfirmed, so the lockfile has deliberately not been changed yet. See [the version-mapping report](ios-18.7.12-version.md).
+The previous research pin `xnu-11215.1.10` (commit `8d741a5de7ff4191bf97d57b9f54c2f6d4a15585`) belongs to the iOS 18.0 / Darwin 24.0.0 generation and is too old to call the final iOS 18.7.12 baseline.
+
+Research identifies Darwin `24.6.0` as the best-supported kernel version family for iOS 18.7.12 build `22H390`. The public XNU tag `xnu-11417.140.69` has been resolved to peeled commit `43a90889846e00bfb5cf1d255cdc0a701a1e05a4`. This is a reproducible public upstream candidate in the matching Darwin family, **not a proven exact source match** for the iPhone XR's 22H390 kernel. The exact build suffix remains unconfirmed, so `xnu/upstream.lock` has deliberately not been changed.
+
+See the [version-mapping report](ios-18.7.12-version.md) for tag object metadata and evidence.
+
+## HANOIP platform planning
+
+The evidence-first [HANOIP kernel work plan](../architecture/HANOIP_KERNEL_PLAN.md) separates generic ARM64, Qualcomm SoC, and Motorola board responsibilities. It is planning documentation only; no HANOIP XNU platform implementation or validated device driver exists yet.
 
 ## Important boundaries
 
@@ -34,7 +42,7 @@ The original research pin `xnu-11215.1.10` (commit `8d741a5de7ff4191bf97d57b9f54
 ## References
 
 - [Apple Open Source](https://opensource.apple.com/)
-- [Apple XNU source repository](https://github.com/apple-oss-distributions/xnu/tree/xnu-11215.1.10)
+- [Apple XNU source tag](https://github.com/apple-oss-distributions/xnu/tree/xnu-11417.140.69)
 - [HackintoiOS XNU source integration](../../xnu/README.md)
 - [HackintoiOS device profile](../device-profile.md)
 - [HackintoiOS architecture overview](../architecture/overview.md)
