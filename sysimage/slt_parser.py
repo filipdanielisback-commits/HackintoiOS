@@ -91,7 +91,7 @@ def entries(filename: str) -> Iterator[dict]:
                 continue
             if " = " in line or line.endswith(" ="):
                 key, _, value = line.partition(" =")
-                record[key] = value
+                record[key] = value[1:] if value.startswith(" ") else value
     item = convert(record)
     if item is not None:
         yield item
