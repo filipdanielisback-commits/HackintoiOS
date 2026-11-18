@@ -19,36 +19,35 @@ class HanoipDtsAuditTests(unittest.TestCase):
     def make_tree(self, root: Path) -> None:
         qcom = root / "arch/arm64/boot/dts/qcom"
         qcom.mkdir(parents=True)
-        (qcom / "Makefile").write_text(
-            "dtbo-$(CONFIG_HANOIP_DTB) +=\\n"
-            + "".join(f"\\tsdmmagpie-hanoip-{v}-overlay.dtbo \\\\n" for v in ("evt1", "dvt1", "dvt2"))
-            + "".join(f"sdmmagpie-camera-sensor-mot-hanoip-{v}-overlay.dtsi\\n" for v in ("evt1", "dvt1", "dvt2")),
-            encoding="utf-8",
-        )
+        lines = ["dtbo-$(CONFIG_HANOIP_DTB) +=\n"]
+        for variant in ("evt1", "dvt1", "dvt2"):
+            lines.append(f"\tsdmmagpie-hanoip-{variant}-overlay.dtbo \\\n")
+            lines.append(f"\tsdmmagpie-camera-sensor-mot-hanoip-{variant}-overlay.dtsi\n")
+        (qcom / "Makefile").write_text("".join(lines), encoding="utf-8")
         (qcom / "sdmmagpie.dtsi").write_text(
-            '/ { model = "Qualcomm Technologies, Inc. SDMMAGPIE";\\n'
-            'compatible = "qcom,sdmmagpie";\\n'
-            'interrupt-parent = <&pdc>;\\n};\\n',
+            '/ { model = "Qualcomm Technologies, Inc. SDMMAGPIE";\n'
+            'compatible = "qcom,sdmmagpie";\n'
+            'interrupt-parent = <&pdc>;\n};\n',
             encoding="utf-8",
         )
         (qcom / "sdmmagpie-hanoip-common-overlay.dtsi").write_text(
-            '#include "sdmmagpie-moto-common-overlay.dtsi"\\n'
-            '#include "hanoi-panel.dtsi"\\n'
-            '#include "sdmmagpie-hanoi-touchscreen.dtsi"\\n'
-            '#include "sdmmagpie-hanoip-sensor-overlay.dtsi"\\n',
+            '#include "sdmmagpie-moto-common-overlay.dtsi"\n'
+            '#include "hanoi-panel.dtsi"\n'
+            '#include "sdmmagpie-hanoi-touchscreen.dtsi"\n'
+            '#include "sdmmagpie-hanoip-sensor-overlay.dtsi"\n',
             encoding="utf-8",
         )
         for name, board in (("evt1", "0xA100"), ("dvt1", "0xB100"), ("dvt2", "0xB200")):
             (qcom / f"sdmmagpie-hanoip-{name}-overlay.dts").write_text(
-                '/ { model = "hanoip";\\n'
-                'qcom,msm-id = <365 0x0>;\\n'
-                f'qcom,board-id = <0x4C {board}>;\\n}};\\n'
-                '#include "sdmmagpie-hanoip-common-overlay.dtsi"\\n'
-                f'#include "sdmmagpie-camera-sensor-mot-hanoip-{name}-overlay.dtsi"\\n',
+                '/ { model = "hanoip";\n'
+                'qcom,msm-id = <365 0x0>;\n'
+                f'qcom,board-id = <0x4C {board}>;\n}};\n'
+                '#include "sdmmagpie-hanoip-common-overlay.dtsi"\n'
+                f'#include "sdmmagpie-camera-sensor-mot-hanoip-{name}-overlay.dtsi"\n',
                 encoding="utf-8",
             )
             (qcom / f"sdmmagpie-camera-sensor-mot-hanoip-{name}-overlay.dtsi").write_text(
-                "/* synthetic camera overlay */\\n", encoding="utf-8"
+                "/* synthetic camera overlay */\n", encoding="utf-8"
             )
 
     def test_reports_three_variants_without_claiming_exact_board(self):
@@ -74,7 +73,7 @@ class HanoipDtsAuditTests(unittest.TestCase):
             root = Path(tmp)
             self.make_tree(root)
             common = root / "arch/arm64/boot/dts/qcom/sdmmagpie-hanoip-common-overlay.dtsi"
-            common.write_text('#include "sdmmagpie-moto-common-overlay.dtsi"\\n', encoding="utf-8")
+            common.write_text('#include "sdmmagpie-moto-common-overlay.dtsi"\n', encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "missing expected includes"):
                 MODULE.audit(root, "test-commit")
 
