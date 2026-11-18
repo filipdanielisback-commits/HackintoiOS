@@ -52,6 +52,28 @@ def main() -> int:
         assert selected.returncode == 0 and selected.stdout.strip() == "rootfs.dmg", selected.stderr
         components = run(*selector, "--list-components")
         assert components.returncode == 0 and "Cryptex1,AppOS" in components.stdout
+
+        fs_report = run(sys.executable, str(SYSDIR / "inspect-filesystem.py"),
+                        str(work / "metadata/BuildManifest.plist"), "--json")
+        assert fs_report.returncode == 0, fs_report.stderr
+        fs_data = json.loads(fs_report.stdout)
+        fs_components = {item["name"]: item for item in fs_data["identities"][0]["components"]}
+        assert fs_components["OS"]["role"] == "root-filesystem-input-candidate"
+        assert fs_components["Cryptex1,AppOS"]["role"] == "system-cryptex-input-candidate"
+        assert fs_components["OS"]["ipsw_member"] == "rootfs.dmg"
+        assert "APFS image creation is not implemented" in " ".join(fs_data["limitations"])
+
+        unsafe_manifest = dict(manifest)
+        unsafe_manifest["BuildIdentities"] = [{
+            "Info": {"ProductType": "iPhone11,8", "DeviceClass": "N841AP"},
+            "Manifest": {"OS": {"Info": {"Path": "../outside.dmg"}}},
+        }]
+        unsafe_path = work / "unsafe-BuildManifest.plist"
+        unsafe_path.write_bytes(plistlib.dumps(unsafe_manifest))
+        unsafe_report = run(sys.executable, str(SYSDIR / "inspect-filesystem.py"),
+                            str(unsafe_path), "--json")
+        assert unsafe_report.returncode == 0, unsafe_report.stderr
+        assert unsafe_report.stdout.find("outside.dmg") == -1
         wrong_board = run(*selector, "--board", "wrong")
         assert wrong_board.returncode == 3, wrong_board.stderr
 
