@@ -16,7 +16,7 @@ The inspected Linux source is the community `android_kernel_motorola_sm6150` tre
 - [HANOIP DVT2 overlay](https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/blob/5b04fac0cb2a8311ae69e8644384426e838d91fe/arch/arm64/boot/dts/qcom/sdmmagpie-hanoip-dvt2-overlay.dts)
 - [HANOIP Linux defconfig](https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/blob/5b04fac0cb2a8311ae69e8644384426e838d91fe/arch/arm64/configs/vendor/hanoip_defconfig)
 
-The source tree and defconfig are named `sm6150`, but the actual device-tree base describes `SDMMAGPIE` (`qcom,sdmmagpie`). The HANOIP overlay is a separate board layer. Do not use the repository name alone as the XNU platform identity.
+The source tree and defconfig are named `sm6150`, but the actual device-tree base describes `SDMMAGPIE` (`qcom,sdmmagpie`). The HANOIP overlay is a separate board layer. Do not use the repository name alone as the XNU platform identity. The automated audit now walks quoted includes recursively from the shared SoC tree, common HANOIP overlay, and each engineering/camera overlay, recording the include graph and any missing or unsafe paths. This is source-closure evidence only; it does not merge or compile the device tree.
 
 ## Verified device-tree observations
 
