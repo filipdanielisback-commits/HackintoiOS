@@ -1,0 +1,80 @@
+name: HackintoiOS UEFI loader
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "bootloader/**"
+      - "tools/check-uefi-artifact.py"
+      - ".github/workflows/bootloader-uefi.yml"
+  pull_request:
+    paths:
+      - "bootloader/**"
+      - "tools/check-uefi-artifact.py"
+      - ".github/workflows/bootloader-uefi.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-aarch64-uefi:
+    name: Build AArch64 UEFI application
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out HackintoiOS
+        uses: actions/checkout@v4
+
+      - name: Install cross-compilation dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            gcc-aarch64-linux-gnu \
+            uuid-dev \
+            nasm \
+            acpica-tools \
+            python3
+
+      - name: Check out EDK II
+        uses: actions/checkout@v4
+        with:
+          repository: tianocore/edk2
+          ref: edk2-stable202405
+          path: edk2
+          submodules: recursive
+
+      - name: Build EDK II BaseTools
+        working-directory: edk2
+        run: make -C BaseTools
+
+      - name: Build HackintoiOS UEFI application
+        working-directory: edk2
+        env:
+          GCC5_AARCH64_PREFIX: aarch64-linux-gnu-
+        run: |
+          set -euxo pipefail
+          source edksetup.sh
+          build \
+            -p ArmVirtPkg/ArmVirtQemu.dsc \
+            -m ../HackintoiOS/bootloader/uefi/HackintoiOSLoader.inf \
+            -a AARCH64 \
+            -t GCC5 \
+            -b RELEASE
+
+      - name: Locate and validate EFI application
+        run: |
+          set -euxo pipefail
+          EFI_FILE="$(find edk2/Build -type f -name HackintoiOSLoader.efi -print -quit)"
+          test -n "$EFI_FILE"
+          mkdir -p dist
+          cp "$EFI_FILE" dist/HackintoiOSLoader.efi
+          python3 tools/check-uefi-artifact.py dist/HackintoiOSLoader.efi
+
+      - name: Upload UEFI application
+        uses: actions/upload-artifact@v4
+        with:
+          name: hackintoiOS-aarch64-uefi-prototype
+          path: dist/HackintoiOSLoader.efi
+          if-no-files-found: error
+          retention-days: 14
