@@ -2,9 +2,9 @@
 
 **Experimental operating-system research for the Motorola Moto G60 (XT2135-2).**
 
-HackintoiOS investigates the architectural and engineering challenges involved in studying Darwin and the open-source XNU kernel on non-Apple ARM64 hardware. The project is currently in the **research and documentation stage**.
+HackintoiOS investigates the architectural and engineering challenges involved in studying Darwin and the open-source XNU kernel on non-Apple ARM64 hardware. The project is in the **research and early scaffolding stage**.
 
-> **Project status:** Research only. This repository does not contain a working iOS port, a bootable image, device drivers, or a supported installation method.
+> **Project status:** No working iOS port, bootable Moto G60 image, or validated Moto G60 XNU drivers exist. The repository now includes an original host-built userland smoke test; this is not a Darwin runtime.
 
 ## Goals
 
@@ -19,63 +19,40 @@ HackintoiOS investigates the architectural and engineering challenges involved i
 
 | Item | Value |
 | --- | --- |
-| Device | Motorola Moto G60 |
+| Device | Motorola Moto G60 Vision |
 | Model | XT2135-2 |
-| CPU architecture | ARM64 target (exact platform details to be verified) |
-| Current project phase | Research and documentation |
+| Device family | HANOIP |
+| Current project phase | Research and early scaffolding |
 
-Hardware details will be added only when verified against reliable documentation or measurements. See [device research](docs/device-profile.md).
+Hardware details will be added only when verified against reliable documentation or measurements. See [device research](devices/moto-g60-xt2135-2/README.md) and the [hardware bring-up tracker](devices/moto-g60-xt2135-2/hardware-status.md).
 
 ## Repository layout
 
 ```text
 .
-├── README.md
-├── CONTRIBUTING.md
-├── SECURITY.md
-├── Makefile
-├── build/
-│   └── Makefile
-├── bootloader/
-│   └── README.md
-├── docs/
-│   ├── README.md
-│   ├── architecture/
-│   │   └── overview.md
-│   ├── device-profile.md
-│   ├── research-log.md
-│   └── roadmap.md
-├── firmware/
-│   └── README.md
-├── hardware/
-│   └── README.md
-└── kernel/
-    └── README.md
+├── bootloader/       # UEFI application prototype and notes
+├── devices/          # Moto G60 target profile and hardware status
+├── docs/             # Architecture, roadmap and research notes
+├── drivers/          # Planned XNU-facing driver work; none implemented yet
+├── kernel/           # Linux reference-kernel build, not XNU
+├── sysimage/         # Safe IPSW archive-inspection tools
+├── userland/         # Original host smoke test and userland research
+└── xnu/              # Pinned upstream XNU research baseline and patch manifest
 ```
-
-## Research areas
-
-| Area | Current focus |
-| --- | --- |
-| ARM64 platform | Identify verified SoC, memory, and platform information |
-| Boot process | Document boot stages and device-specific constraints |
-| XNU / Darwin | Study upstream source, build requirements, and portability boundaries |
-| Kernel | Track architecture assumptions and required platform support |
-| Hardware | Create a component-by-component compatibility matrix |
-| Build system | Provide safe documentation and validation targets only |
-
-See the [roadmap](docs/roadmap.md) and [research log](docs/research-log.md).
 
 ## Build status
 
-The Makefiles currently provide **documentation and project-maintenance helpers only**. They do not compile XNU, create firmware, unpack IPSW files, generate boot images, or modify a phone.
+The project has separate checks for the Linux reference kernel, XNU source-baseline integrity, sysimage tooling, UEFI prototype and the initial host userland smoke test. A successful check proves only what that workflow tests; it does not establish that XNU boots on the phone.
 
-Run:
+Run the documentation and host userland checks:
 
 ```sh
 make help
 make docs-check
+make userland-check
 ```
+
+The userland smoke test compiles with the host C compiler and runs on the CI host. It is not an iOS application, Darwin user space, XNU test, or phone boot test.
 
 ## Important technical and legal notes
 
