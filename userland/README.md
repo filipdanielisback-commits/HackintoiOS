@@ -17,7 +17,7 @@ From the repository root:
 
 ```sh
 sh userland/build.sh
-./build/userland/hackintoios-hello
+./build-output/userland/hackintoios-hello
 ```
 
 Or choose an output directory:
