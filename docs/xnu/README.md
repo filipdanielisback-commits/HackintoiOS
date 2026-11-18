@@ -1,6 +1,6 @@
 # XNU and Darwin research
 
-**Status: pinned upstream baseline and research only.** This directory records XNU/Darwin architecture research relevant to HackintoiOS. It is not an iOS 18 source tree, an XNU port, or a bootable system.
+**Status: pinned upstream baseline; research and documentation only.** This directory records XNU/Darwin architecture research relevant to HackintoiOS. It is not an iOS 18 source tree, an XNU port, or a bootable system.
 
 ## Scope
 
