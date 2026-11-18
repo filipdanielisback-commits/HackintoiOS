@@ -1,0 +1,17 @@
+[Defines]
+  INF_VERSION                    = 0x0001001B
+  BASE_NAME                      = HackintoiOSLoader
+  FILE_GUID                      = 8C3D4B20-9B42-4A6C-8C61-2A9C5B0F2026
+  MODULE_TYPE                    = UEFI_APPLICATION
+  VERSION_STRING                 = 0.1
+  ENTRY_POINT                    = UefiMain
+
+[Sources]
+  HackintoiOSLoader.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+
+[LibraryClasses]
+  UefiApplicationEntryPoint
+  UefiLib
