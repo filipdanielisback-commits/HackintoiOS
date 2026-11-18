@@ -1,0 +1,60 @@
+name: HANOIP device-tree evidence audit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "tools/audit-hanoip-dts.py"
+      - "tools/test-hanoip-dts-audit.py"
+      - "docs/architecture/HANOIP_RESOURCE_INVENTORY.md"
+      - ".github/workflows/hanoip-dts-audit.yml"
+  pull_request:
+    paths:
+      - "tools/audit-hanoip-dts.py"
+      - "tools/test-hanoip-dts-audit.py"
+      - "docs/architecture/HANOIP_RESOURCE_INVENTORY.md"
+      - ".github/workflows/hanoip-dts-audit.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    name: Audit pinned HANOIP device-tree sources
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out HackintoiOS
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Run synthetic audit tests
+        run: python tools/test-hanoip-dts-audit.py
+
+      - name: Fetch pinned community kernel sources
+        env:
+          KERNEL_COMMIT: 5b04fac0cb2a8311ae69e8644384426e838d91fe
+        run: |
+          git init kernel-src
+          git -C kernel-src remote add origin https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150.git
+          git -C kernel-src fetch --depth 1 origin "$KERNEL_COMMIT"
+          git -C kernel-src checkout --detach FETCH_HEAD
+
+      - name: Audit HANOIP overlays and emit JSON inventory
+        run: |
+          mkdir -p build
+          python tools/audit-hanoip-dts.py \
+            --source kernel-src \
+            --source-commit 5b04fac0cb2a8311ae69e8644384426e838d91fe \
+            --output build/hanoip-dts-inventory.json
+
+      - name: Upload evidence inventory
+        uses: actions/upload-artifact@v4
+        with:
+          name: hanoip-dts-inventory
+          path: build/hanoip-dts-inventory.json
+          if-no-files-found: error
