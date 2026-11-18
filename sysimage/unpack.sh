@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Extract the iPhone XR build manifest and its selected OS archive member.
-# This does not decrypt or install firmware.
+# Extract the iPhone XR build manifest and a selected component from a local IPSW.
+# This is archive inspection only: no decryption, restore, or device modification.
 set -euo pipefail
 
 if [[ $# -ne 2 ]]; then
@@ -9,26 +9,29 @@ if [[ $# -ne 2 ]]; then
 fi
 
 IPSW="$(realpath "$1")"
-OUT="$2"
 if [[ ! -f "$IPSW" ]]; then
     echo "error: IPSW file not found: $IPSW" >&2
     exit 1
 fi
 
+mkdir -p "$2"
+OUT="$(cd -- "$2" && pwd)"
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 MEMBER_TOOL="$SCRIPT_DIR/ipsw-member.py"
 SELECTOR="$SCRIPT_DIR/select-system.py"
+MANIFEST="$OUT/metadata/BuildManifest.plist"
 
 mkdir -p "$OUT/metadata" "$OUT/payload"
-python3 "$MEMBER_TOOL" extract "$IPSW" BuildManifest.plist \
-    --output "$OUT/metadata/BuildManifest.plist"
+python3 "$MEMBER_TOOL" extract "$IPSW" BuildManifest.plist --output "$MANIFEST"
 
-OS_MEMBER="$(python3 "$SELECTOR" "$OUT/metadata/BuildManifest.plist" --print-path | tail -n 1)"
+echo "Available image components:"
+python3 "$SELECTOR" "$MANIFEST" --list-components
+
+OS_MEMBER="$(python3 "$SELECTOR" "$MANIFEST" --component OS --print-path)"
 OS_NAME="$(basename "$OS_MEMBER")"
-python3 "$MEMBER_TOOL" extract "$IPSW" "$OS_MEMBER" \
-    --output "$OUT/payload/$OS_NAME"
+python3 "$MEMBER_TOOL" extract "$IPSW" "$OS_MEMBER" --output "$OUT/payload/$OS_NAME"
 
-echo "IPSW inspection complete."
-echo "Manifest: $OUT/metadata/BuildManifest.plist"
-echo "OS archive member: $OUT/payload/$OS_NAME"
-echo "Note: the OS image may be encrypted; no decryption or security bypass was attempted."
+echo "IPSW archive inspection complete."
+echo "Build manifest: $MANIFEST"
+echo "Selected OS member: $OUT/payload/$OS_NAME"
+echo "The image may be encrypted or otherwise require Apple-specific processing."
