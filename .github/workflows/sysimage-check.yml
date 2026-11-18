@@ -24,8 +24,8 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
       - name: Check Python syntax
-        run: python3 -m py_compile sysimage/ipsw-member.py sysimage/select-system.py sysimage/mkvarskel.py tools/test-sysimage.py
+        run: python3 -m py_compile sysimage/listing.py sysimage/ipsw-member.py sysimage/select-system.py sysimage/mkvarskel.py sysimage/rootfs-index.py tools/test-sysimage.py
       - name: Check shell syntax
         run: bash -n sysimage/unpack.sh
-      - name: Run synthetic IPSW tests
+      - name: Run synthetic IPSW and filesystem tests
         run: python3 tools/test-sysimage.py
