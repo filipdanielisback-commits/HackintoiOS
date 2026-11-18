@@ -2,7 +2,7 @@
 set -eu
 
 ROOT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
-OUTPUT_DIR=${1:-"$ROOT_DIR/build/userland"}
+OUTPUT_DIR=${1:-"$ROOT_DIR/build-output/userland"}
 CC=${CC:-cc}
 CFLAGS=${CFLAGS:--std=c11 -Wall -Wextra -Werror -O2}
 
