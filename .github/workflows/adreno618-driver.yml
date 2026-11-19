@@ -52,3 +52,13 @@ jobs:
 
       - name: Run platform allocator tests
         run: /tmp/test-adreno618-allocator
+
+      - name: Compile bounded MMIO interface tests
+        run: |
+          cc -std=c11 -Wall -Wextra -Werror -pedantic \
+            drivers/gpu/adreno618/adreno618_mmio.c \
+            drivers/gpu/adreno618/tests/test_adreno618_mmio.c \
+            -o /tmp/test-adreno618-mmio
+
+      - name: Run bounded MMIO interface tests
+        run: /tmp/test-adreno618-mmio
