@@ -1,0 +1,43 @@
+name: XNU build wrapper checks
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "xnu-env.sh"
+      - "xnu-build.sh"
+      - "tools/test-xnu-build-scripts.py"
+      - ".github/workflows/xnu-build-scripts.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate XNU environment and build wrappers
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Check shell syntax
+        run: bash -n xnu-env.sh xnu-build.sh
+
+      - name: Check environment output
+        run: |
+          set -euo pipefail
+          bash xnu-build.sh --help
+          bash xnu-build.sh --print-env
+
+      - name: Run wrapper contract tests
+        run: python3 tools/test-xnu-build-scripts.py
+
+      - name: Confirm default build is safely gated
+        run: |
+          set -euo pipefail
+          if bash xnu-build.sh >build-output.txt 2>&1; then
+            echo "Unexpectedly started a build without explicit opt-in"
+            exit 1
+          fi
+          grep -q "real builds are disabled by default" build-output.txt
