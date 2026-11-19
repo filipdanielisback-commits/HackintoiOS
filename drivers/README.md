@@ -1,34 +1,47 @@
-# Hardware driver work
+# HackintoiOS drivers
 
-**Status: planning and source research only. No HackintoiOS hardware drivers are implemented here yet.**
+This directory is the home for original XNU-facing driver work, separated by subsystem and platform layer.
 
-This directory is reserved for original XNU-facing drivers, organized by hardware subsystem. HakiOS is an architectural reference, but its POCO X5 Pro / SC7280 driver code and register values are not evidence for the Moto G60 Vision (XT2135-2 / HANOIP).
+The organization takes inspiration from the subsystem-based layout used by projects such as HakiOS. It is an independent design: no HakiOS driver code or POCO X5 Pro / SC7280 hardware values are copied into this project.
 
-## Planned subsystems
+## Current state
 
-| Area | First milestone | Current status |
-|---|---|---|
-| Input | Identify the power, volume-up and volume-down event path; define a read-only input test | Not implemented |
-| Display | Identify display controller, panel path and boot framebuffer handoff; show a basic test pattern only after a safe test environment exists | Not implemented |
-| Battery / power | Identify battery gauge, charger and PMIC interfaces; report read-only status | Not implemented |
-| Storage | Document the boot-time storage interface and read-only access requirements | Not implemented |
-| Boot | Define a QEMU-first XNU handoff contract before any phone-specific integration | Research only; separate UEFI prototype is not a phone bootloader |
-| GPU | Identify the exact Adreno and display stack; defer acceleration until basic display output is understood | Not implemented |
-| Audio / wireless | Inventory device-tree nodes and firmware dependencies | Not implemented |
+**No HANOIP XNU hardware driver is currently implemented and verified as working.**
 
-## Evidence required before writing a device driver
+See [STATUS.md](STATUS.md) for the authoritative working list, not-yet-implemented list, available evidence, and status rules.
 
-1. Exact target model and firmware baseline.
-2. Relevant device-tree nodes and compatible strings from a trustworthy source.
-3. Register ranges, interrupts, clocks, regulators and GPIO/pinctrl relationships, with provenance.
-4. Existing vendor or upstream driver behavior and applicable license.
-5. A documented test environment and a way to recover without changing phone partitions.
+## Planned organization
 
-A Linux driver compiling or working on Android does not make it an XNU driver. Do not copy another phone's register addresses, GPIO numbers, power rails or firmware assumptions.
+| Path | Responsibility |
+|---|---|
+| `platform/` | Common ARM64 platform services and loader-to-kernel handoff |
+| `qualcomm/sm7150/` | Verified Qualcomm SoC-wide support only |
+| `motorola/hanoip/` | Moto G60 board-specific configuration and glue |
+| `console/` | Early serial/debug console |
+| `interrupts/` | Interrupt-controller integration |
+| `timer/` | Architectural timer integration |
+| `storage/` | Read-only storage discovery and storage interfaces |
+| `display/` | Framebuffer/display integration |
+| `input/` | Touchscreen and input |
+| `connectivity/` | Wi-Fi and Bluetooth |
+| `audio/` | Audio interfaces |
+| `camera/` | Camera sensors and ISP interfaces |
+| `sensors/` | Motion and environmental sensors |
+| `power/` | PMIC, battery, thermal, and power interfaces |
 
-## Safety and validation boundaries
+Directories and source files will be added when evidence supports a real implementation. We will not add empty C files or label placeholders as drivers.
 
-- Initial driver work should be static analysis, host tests and QEMU experiments.
-- Do not write to phone partitions or alter firmware as part of driver discovery.
-- Battery and power work must begin read-only; no charging-control or thermal-limit experiments.
-- A driver is marked supported only after reproducible evidence on the exact XT2135-2 target. A source-level check or CI compile is not hardware validation.
+## Implementation sequence
+
+1. Define the platform contract: CPU state, memory map, device-tree handoff, console, timer, and interrupts.
+2. Establish minimal platform identification and debug output.
+3. Evaluate read-only storage discovery and basic display/input paths.
+4. Add remaining subsystems individually after exact component identities and dependencies are documented.
+
+Each driver must record its hardware source, supported board revision, build result, test environment, and known limitations. Host or QEMU tests must be distinguished from validation on the exact Moto G60.
+
+## Related documents
+
+- [HANOIP resource inventory](../docs/architecture/HANOIP_RESOURCE_INVENTORY.md)
+- [HANOIP kernel plan](../docs/architecture/HANOIP_KERNEL_PLAN.md)
+- [Overall porting plan](../docs/architecture/PORTING_PLAN.md)
