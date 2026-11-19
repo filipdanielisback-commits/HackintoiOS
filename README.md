@@ -21,7 +21,7 @@ This is an ambitious research goal, not a claim of current compatibility or guar
 
 The iPhone XR restore image is a research reference, not a Moto G60 firmware image. Its device-specific components are not assumed to work on HANOIP. The current XNU pin was selected for the original iOS 18.0 / Darwin 24.0.0 research baseline and must be checked against the exact 18.7.12 build before it is treated as final.
 
-See the [HakiOS-informed porting plan](docs/architecture/PORTING_PLAN.md), [device research](devices/moto-g60-xt2135-2/README.md), the [hardware bring-up tracker](devices/moto-g60-xt2135-2/hardware-status.md), and the [driver status list](drivers/STATUS.md).
+See the [HakiOS-informed porting plan](docs/architecture/PORTING_PLAN.md), [repository architecture map](docs/architecture/REPOSITORY_LAYOUT.md), [device research](devices/moto-g60-xt2135-2/README.md), the [hardware bring-up tracker](devices/moto-g60-xt2135-2/hardware-status.md), and the [driver status list](drivers/STATUS.md).
 
 ## Goals
 
@@ -38,19 +38,32 @@ See the [HakiOS-informed porting plan](docs/architecture/PORTING_PLAN.md), [devi
 ```text
 .
 ├── bootloader/       # AArch64 UEFI application prototype and boot-chain research
+├── configs/          # Future common, Moto G60, and QEMU configuration layers
 ├── devices/          # Moto G60 target profile and hardware status
 ├── docs/             # Architecture, porting plan, development and research notes
-├── drivers/          # XNU driver organization and working/pending status tracker
-├── kernel/           # Linux reference-kernel build, not XNU
-├── sysimage/         # Safe IPSW archive-inspection and metadata tools
-├── userland/
-│   ├── c/            # C user-space conventions and host tests
-│   ├── cpp/          # C++17 foundations and compiler smoke test
-│   └── objc/         # Objective-C syntax probe; runtime/framework work deferred
-├── xnu/              # Pinned upstream XNU research baseline and patch manifest
-├── xnu-env.sh        # Shared XNU build environment
-└── xnu-build.sh      # Guarded XNU build entry point
+├── drivers/           # Subsystem driver research and original implementation
+│   ├── audio/         # Audio research and future driver
+│   ├── bluetooth/     # Bluetooth research and future driver
+│   ├── camera/        # Camera research and future driver
+│   ├── core/          # Device-neutral driver interfaces (planned)
+│   ├── gpu/           # HanoipAdreno618 foundations
+│   ├── input/         # Touchscreen and input
+│   ├── motorola/       # HANOIP board-specific layer
+│   ├── power/         # PMIC, battery, and thermal
+│   ├── qualcomm/      # Shared SoC-family layer
+│   ├── storage/       # Storage discovery and interfaces
+│   └── wifi/          # Qualcomm CLD3 research
+├── kernel/            # Linux reference-kernel build, not XNU
+├── qemu/              # QEMU experiment index and test guidance
+├── sysimage/          # Safe IPSW archive-inspection and metadata tools
+├── tools/             # Original validation and development utilities
+├── userland/          # C, C++17, Objective-C probes, and future user space
+├── xnu/               # Pinned upstream XNU research baseline and patch manifest
+├── xnu-env.sh         # Shared XNU build environment
+└── xnu-build.sh       # Guarded XNU build entry point
 ```
+
+See [the full directory map](docs/architecture/REPOSITORY_LAYOUT.md). These folders define project boundaries; a directory or README is not evidence that a driver or subsystem works.
 
 ## Language policy
 
@@ -77,7 +90,7 @@ The userland smoke test compiles with the host C compiler and runs on the CI hos
 - Apple's complete iOS source code and many device-specific components are proprietary. This project does not claim to recreate or distribute them.
 - XNU and other open-source components retain their own upstream licenses. The repository's MIT license applies only to original project material that the maintainer has the right to license.
 - Do not commit proprietary firmware, IPSW contents, signing material, credentials, or files whose redistribution rights are unclear.
-- HakiOS and other projects are architectural references, not proof that their device configurations or patches work on the Moto G60. See the [porting plan](docs/architecture/PORTING_PLAN.md).
+- HakiOS and other projects are architectural references, not proof that their device configurations or patches work on the Moto G60. See the [porting plan](docs/architecture/PORTING_PLAN.md) and [directory map](docs/architecture/REPOSITORY_LAYOUT.md).
 - Do not flash unverified images, replace device firmware, or bypass device security controls as part of this research.
 - No Apple affiliation or endorsement is claimed. Apple, iOS, Darwin, and related marks belong to their respective owners.
 
