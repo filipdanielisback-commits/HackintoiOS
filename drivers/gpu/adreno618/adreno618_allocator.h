@@ -53,6 +53,7 @@ struct adreno618_allocation_view {
     size_t offset;
 };
 
+void adreno618_allocation_init(struct adreno618_allocation *allocation);
 enum adreno618_allocator_status adreno618_allocation_create(
     struct adreno618_allocation *allocation,
     const struct adreno618_allocator_ops *ops, void *context,
