@@ -95,8 +95,9 @@ static void test_create_map_unmap_destroy(void)
 static void test_allocation_failures_and_validation(void)
 {
     struct fake_platform platform = {0};
-    struct adreno618_allocation allocation = {0};
+    struct adreno618_allocation allocation;
 
+    adreno618_allocation_init(&allocation);
     platform.fail_allocate = true;
     assert(adreno618_allocation_create(&allocation, &fake_ops, &platform,
         64U, 16U, ADRENO618_MEMORY_READ) == ADRENO618_ALLOCATOR_E_PLATFORM);
@@ -113,7 +114,7 @@ static void test_allocation_failures_and_validation(void)
 static void test_mapping_failure_and_bounds(void)
 {
     struct fake_platform platform = {0};
-    struct adreno618_allocation allocation = {0};
+    struct adreno618_allocation allocation;
     struct adreno618_allocation_view view = {0};
 
     adreno618_allocation_init(&allocation);
