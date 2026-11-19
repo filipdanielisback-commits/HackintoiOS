@@ -2,14 +2,15 @@
 
 This is the authoritative status list for HackintoiOS driver work on the Moto G60 Vision (XT2135-2, HANOIP).
 
-**Current result: no HANOIP XNU hardware driver is implemented and verified as working.** The original HanoipAdreno618 project now has a portable lifecycle core and a CPU-side memory-object abstraction with host tests. It is not a hardware GPU driver.
+**Current result: no HANOIP XNU hardware driver is implemented and verified as working.** HanoipAdreno618 has a portable lifecycle core, CPU-side memory objects, and a synthetic platform-allocator contract with host tests. It is not a hardware GPU driver.
 
 ## Partial implementations
 
 | Driver | Code | Verified behavior | Limitations |
 |---|---|---|---|
 | HanoipAdreno618 core | [adreno618.c](gpu/adreno618/adreno618.c), [header](gpu/adreno618/adreno618.h) | Host tests cover lifecycle, identity rejection, resource validation, and state transitions | No GPU register access, firmware, XNU integration, or hardware acceleration |
-| HanoipAdreno618 memory objects | [adreno618_memory.c](gpu/adreno618/adreno618_memory.c), [header](gpu/adreno618/adreno618_memory.h) | Host tests cover caller-owned buffers, alignment, access permissions, range bounds, single-view mapping, unmapping, and reset | CPU-side views only; no physical/DMA/GPU virtual mapping, page tables, cache maintenance, or hardware test |
+| HanoipAdreno618 memory objects | [adreno618_memory.c](gpu/adreno618/adreno618_memory.c), [header](gpu/adreno618/adreno618_memory.h) | Host tests cover caller-owned buffers, alignment, permissions, bounds, CPU views, unmapping, and reset | No physical/DMA/GPU virtual mapping, page tables, cache maintenance, or hardware test |
+| HanoipAdreno618 allocator contract | [adreno618_allocator.c](gpu/adreno618/adreno618_allocator.c), [header](gpu/adreno618/adreno618_allocator.h) | Synthetic platform tests cover allocation, map/unmap/release callbacks, validation, and callback failures | No real HANOIP allocator, physical/DMA address, IOMMU, GPU address-space, or hardware integration |
 
 ## Working hardware drivers
 
