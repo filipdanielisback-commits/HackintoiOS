@@ -40,7 +40,7 @@ Motorola's public `kernel-msm` issue [#574](https://github.com/MotorolaMobilityL
 - Shared platform BoardConfig: https://github.com/motorola-sm6150-devs/android_device_motorola_sm6150-common/blob/lineage-20/BoardConfigCommon.mk
 - Kernel source tree: https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/tree/lineage-20
 - Target defconfig: https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/blob/lineage-20/arch/arm64/configs/vendor/hanoip_defconfig
-- Pinned kernel source commit: `5b04fac0cb2a8311ae69e8644384426e838d91fe`
+- Pinned kernel source commit: `5b04fac0cb2a8311ae69c8644384426e838d91fe`
 
 The community kernel source is a baseline reference, not an original HackintoiOS kernel. Its license and notices must remain intact. The initial HackintoiOS configuration fragment changes only the build's local version label.
 
