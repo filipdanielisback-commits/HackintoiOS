@@ -21,7 +21,7 @@ This is an ambitious research goal, not a claim of current compatibility or guar
 
 The iPhone XR restore image is a research reference, not a Moto G60 firmware image. Its device-specific components are not assumed to work on HANOIP. The current XNU pin was selected for the original iOS 18.0 / Darwin 24.0.0 research baseline and must be checked against the exact 18.7.12 build before it is treated as final.
 
-See the [HakiOS-informed porting plan](docs/architecture/PORTING_PLAN.md), [device research](devices/moto-g60-xt2135-2/README.md), and the [hardware bring-up tracker](devices/moto-g60-xt2135-2/hardware-status.md).
+See the [HakiOS-informed porting plan](docs/architecture/PORTING_PLAN.md), [device research](devices/moto-g60-xt2135-2/README.md), the [hardware bring-up tracker](devices/moto-g60-xt2135-2/hardware-status.md), and the [driver status list](drivers/STATUS.md).
 
 ## Goals
 
@@ -40,7 +40,7 @@ See the [HakiOS-informed porting plan](docs/architecture/PORTING_PLAN.md), [devi
 ├── bootloader/       # AArch64 UEFI application prototype and boot-chain research
 ├── devices/          # Moto G60 target profile and hardware status
 ├── docs/             # Architecture, porting plan and research notes
-├── drivers/          # Planned XNU-facing driver work; none implemented yet
+├── drivers/          # XNU driver organization and working/pending status tracker
 ├── kernel/           # Linux reference-kernel build, not XNU
 ├── sysimage/         # Safe IPSW archive-inspection and metadata tools
 ├── userland/         # Original host smoke test and userland research
