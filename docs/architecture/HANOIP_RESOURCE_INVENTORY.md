@@ -6,15 +6,15 @@ This is the first source-backed inventory for the Motorola Moto G60 Vision (XT21
 
 ## Source baseline
 
-The inspected Linux source is the community `android_kernel_motorola_sm6150` tree, branch `lineage-20`, at the project-pinned source revision `5b04fac0cb2a8311ae69e8644384426e838d91fe`.
+The inspected Linux source is the community `android_kernel_motorola_sm6150` tree, branch `lineage-20`, at the project-pinned source revision `5b04fac0cb2a8311ae69c8644384426e838d91fe`.
 
-- [QCOM device-tree build Makefile](https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/blob/5b04fac0cb2a8311ae69e8644384426e838d91fe/arch/arm64/boot/dts/qcom/Makefile)
-- [SDMMAGPIE shared SoC device tree](https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/blob/5b04fac0cb2a8311ae69e8644384426e838d91fe/arch/arm64/boot/dts/qcom/sdmmagpie.dtsi)
-- [HANOIP common board overlay](https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/blob/5b04fac0cb2a8311ae69e8644384426e838d91fe/arch/arm64/boot/dts/qcom/sdmmagpie-hanoip-common-overlay.dtsi)
-- [HANOIP EVT1 overlay](https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/blob/5b04fac0cb2a8311ae69e8644384426e838d91fe/arch/arm64/boot/dts/qcom/sdmmagpie-hanoip-evt1-overlay.dts)
-- [HANOIP DVT1 overlay](https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/blob/5b04fac0cb2a8311ae69e8644384426e838d91fe/arch/arm64/boot/dts/qcom/sdmmagpie-hanoip-dvt1-overlay.dts)
-- [HANOIP DVT2 overlay](https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/blob/5b04fac0cb2a8311ae69e8644384426e838d91fe/arch/arm64/boot/dts/qcom/sdmmagpie-hanoip-dvt2-overlay.dts)
-- [HANOIP Linux defconfig](https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/blob/5b04fac0cb2a8311ae69e8644384426e838d91fe/arch/arm64/configs/vendor/hanoip_defconfig)
+- [QCOM device-tree build Makefile](https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/blob/5b04fac0cb2a8311ae69c8644384426e838d91fe/arch/arm64/boot/dts/qcom/Makefile)
+- [SDMMAGPIE shared SoC device tree](https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/blob/5b04fac0cb2a8311ae69c8644384426e838d91fe/arch/arm64/boot/dts/qcom/sdmmagpie.dtsi)
+- [HANOIP common board overlay](https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/blob/5b04fac0cb2a8311ae69c8644384426e838d91fe/arch/arm64/boot/dts/qcom/sdmmagpie-hanoip-common-overlay.dtsi)
+- [HANOIP EVT1 overlay](https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/blob/5b04fac0cb2a8311ae69c8644384426e838d91fe/arch/arm64/boot/dts/qcom/sdmmagpie-hanoip-evt1-overlay.dts)
+- [HANOIP DVT1 overlay](https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/blob/5b04fac0cb2a8311ae69c8644384426e838d91fe/arch/arm64/boot/dts/qcom/sdmmagpie-hanoip-dvt1-overlay.dts)
+- [HANOIP DVT2 overlay](https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/blob/5b04fac0cb2a8311ae69c8644384426e838d91fe/arch/arm64/boot/dts/qcom/sdmmagpie-hanoip-dvt2-overlay.dts)
+- [HANOIP Linux defconfig](https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/blob/5b04fac0cb2a8311ae69c8644384426e838d91fe/arch/arm64/configs/vendor/hanoip_defconfig)
 
 The source tree and defconfig are named `sm6150`, but the actual device-tree base describes `SDMMAGPIE` (`qcom,sdmmagpie`). The HANOIP overlay is a separate board layer. Do not use the repository name alone as the XNU platform identity. The automated audit now walks quoted includes recursively from the shared SoC tree, common HANOIP overlay, and each engineering/camera overlay, recording the include graph and any missing or unsafe paths. This is source-closure evidence only; it does not merge or compile the device tree.
 
