@@ -1,0 +1,34 @@
+name: HanoipAdreno618 driver core
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "drivers/gpu/adreno618/**"
+      - ".github/workflows/adreno618-driver.yml"
+  pull_request:
+    paths:
+      - "drivers/gpu/adreno618/**"
+      - ".github/workflows/adreno618-driver.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  host-tests:
+    name: Build and test portable Adreno 618 core
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out HackintoiOS
+        uses: actions/checkout@v4
+
+      - name: Compile with strict C11 warnings
+        run: |
+          cc -std=c11 -Wall -Wextra -Werror -pedantic \
+            drivers/gpu/adreno618/adreno618.c \
+            drivers/gpu/adreno618/tests/test_adreno618.c \
+            -o /tmp/test-adreno618
+
+      - name: Run host-only tests
+        run: /tmp/test-adreno618
