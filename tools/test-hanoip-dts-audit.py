@@ -39,7 +39,7 @@ class HanoipDtsAuditTests(unittest.TestCase):
         )
         for name, board in (("evt1", "0xA100"), ("dvt1", "0xB100"), ("dvt2", "0xB200")):
             (qcom / f"sdmmagpie-hanoip-{name}-overlay.dts").write_text(
-                '/ { model = "hanoip";\n'
+                '/ {\nmodel = "hanoip";\n'
                 'qcom,msm-id = <365 0x0>;\n'
                 f'qcom,board-id = <0x4C {board}>;\n}};\n'
                 '#include "sdmmagpie-hanoip-common-overlay.dtsi"\n'
