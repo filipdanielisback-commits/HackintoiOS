@@ -18,7 +18,7 @@ The candidate is **not a proven exact source match** for iOS 18.7.12 build `22H3
 - `xnu-build.sh --print-env`: print the selected environment without building.
 - `xnu-build.sh --check`: validate the source checkout, SDK path, and explicit build configuration.
 - `xnu-build.sh --dry-run`: print the proposed `make` command after preflight.
-- `XNU_BUILD_ENABLE=1 ./xnu-build.sh`: explicit opt-in to run the upstream `make` command.
+- `XNU_BUILD_ENABLE=1 bash xnu-build.sh`: explicit opt-in to run the upstream `make` command.
 
 The wrappers intentionally do not download XNU, install an SDK, invent a HANOIP machine configuration, or include proprietary Apple files. A real build requires the candidate source checkout at the pinned commit, a compatible SDK/toolchain, and a machine configuration actually supported by that source tree. No HANOIP machine configuration has been implemented or validated. CI checks only shell syntax and wrapper safeguards; they do **not** compile XNU.
 
