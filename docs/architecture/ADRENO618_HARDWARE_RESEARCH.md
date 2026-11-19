@@ -30,7 +30,7 @@ The HANOIP GPU node is `qcom,kgsl-3d0@5000000`, compatible with `qcom,kgsl-3d0` 
 - `qcom,min-access-length = <32>`
 - `qcom,ubwc-mode = <2>`
 
-The matching Linux GPU core table has an `ADRENO_REV_A618` entry with core 6, major 1, minor 8. It declares 512 KiB GMEM, 32-bit bus width, and the A6xx GPU implementation. This is strong source evidence for an Adreno 618-class A6xx target. The exact retail unit's live chip identity has not been independently read from hardware.
+The matching Linux GPU core table has an `ADRENO_REV_A618` entry with core 6, major 1, minor 8. It declares 512 KiB GMEM and uses the A6xx GPU implementation. The GPU device-tree node separately declares a 32-bit bus width. This is strong source evidence for an Adreno 618-class A6xx target. The exact retail unit's live chip identity has not been independently read from hardware.
 
 Mesa's Freedreno device table also includes GPU ID 618 in its A6xx generation-1 group. This is useful as a cross-check and a future graphics-stack reference, not a substitute for target-specific initialization evidence.
 
