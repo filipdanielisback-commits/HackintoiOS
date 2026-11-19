@@ -39,13 +39,24 @@ See the [HakiOS-informed porting plan](docs/architecture/PORTING_PLAN.md), [devi
 .
 ├── bootloader/       # AArch64 UEFI application prototype and boot-chain research
 ├── devices/          # Moto G60 target profile and hardware status
-├── docs/             # Architecture, porting plan and research notes
+├── docs/             # Architecture, porting plan, development and research notes
 ├── drivers/          # XNU driver organization and working/pending status tracker
 ├── kernel/           # Linux reference-kernel build, not XNU
 ├── sysimage/         # Safe IPSW archive-inspection and metadata tools
-├── userland/         # Original host smoke test and userland research
-└── xnu/              # Pinned upstream XNU research baseline and patch manifest
+├── userland/
+│   ├── c/            # C user-space conventions and host tests
+│   ├── cpp/          # C++17 foundations and compiler smoke test
+│   └── objc/         # Objective-C syntax probe; runtime/framework work deferred
+├── xnu/              # Pinned upstream XNU research baseline and patch manifest
+├── xnu-env.sh        # Shared XNU build environment
+└── xnu-build.sh      # Guarded XNU build entry point
 ```
+
+## Language policy
+
+C is the primary language for kernel, platform and hardware-driver work. C++17 is supported for components where it provides a concrete architectural benefit. Objective-C is reserved for future user-space/framework work and is not a kernel requirement. Python, Bash and Make support research, validation and build orchestration.
+
+See [the language policy](docs/development/LANGUAGE_POLICY.md). The language-toolchain workflow compiles a C++ smoke test, checks Objective-C syntax only, and runs the existing C host smoke test. It does not provide Apple's frameworks or prove Darwin/IOKit integration.
 
 ## Build status
 
