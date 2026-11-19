@@ -52,6 +52,11 @@ The kernel tree contains Qualcomm CNSS PCI and SDIO support code. The generic CN
 
 Therefore, **do not assume PCIe, SDIO, WCN3990 Wi-Fi, QCA6174, QCA6390, or any other exact radio model** from the CLD3 module name alone.
 
+
+### 5. Official radio-capability declaration
+
+Motorola's [XT2135-2 EU Declaration of Conformity](https://en-us.support.motorola.com/ci/fattach/get/79315385/1664922506/redirect/1/filename/XT2135-2_Moto%2BG60%2BVision%2BMC38C%2BRED%2BDoC.pdf) identifies the market model as moto g60 XT2135-2 and lists IEEE 802.11a/b/g/n/ac and Bluetooth 5.0. This confirms advertised radio capabilities for the model, but it does not identify the Wi-Fi chipset, bus, firmware package or the exact component fitted to this individual unit.
+
 ## What is not yet known
 
 1. Exact Wi-Fi silicon/module part number for this XT2135-2 hardware revision.
