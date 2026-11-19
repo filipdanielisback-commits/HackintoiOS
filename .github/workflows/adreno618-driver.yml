@@ -23,12 +23,22 @@ jobs:
       - name: Check out HackintoiOS
         uses: actions/checkout@v4
 
-      - name: Compile with strict C11 warnings
+      - name: Compile lifecycle tests with strict C11 warnings
         run: |
           cc -std=c11 -Wall -Wextra -Werror -pedantic \
             drivers/gpu/adreno618/adreno618.c \
             drivers/gpu/adreno618/tests/test_adreno618.c \
             -o /tmp/test-adreno618
 
-      - name: Run host-only tests
+      - name: Run lifecycle tests
         run: /tmp/test-adreno618
+
+      - name: Compile memory-object tests with strict C11 warnings
+        run: |
+          cc -std=c11 -Wall -Wextra -Werror -pedantic \
+            drivers/gpu/adreno618/adreno618_memory.c \
+            drivers/gpu/adreno618/tests/test_adreno618_memory.c \
+            -o /tmp/test-adreno618-memory
+
+      - name: Run memory-object tests
+        run: /tmp/test-adreno618-memory
