@@ -42,3 +42,13 @@ jobs:
 
       - name: Run memory-object tests
         run: /tmp/test-adreno618-memory
+
+      - name: Compile platform allocator tests with strict C11 warnings
+        run: |
+          cc -std=c11 -Wall -Wextra -Werror -pedantic \
+            drivers/gpu/adreno618/adreno618_allocator.c \
+            drivers/gpu/adreno618/tests/test_adreno618_allocator.c \
+            -o /tmp/test-adreno618-allocator
+
+      - name: Run platform allocator tests
+        run: /tmp/test-adreno618-allocator
