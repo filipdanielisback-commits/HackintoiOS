@@ -6,7 +6,7 @@ The organization takes inspiration from subsystem-based layouts such as HakiOS, 
 
 ## Current state
 
-No HANOIP XNU hardware driver is verified as working. The first portable driver-core component is [HanoipAdreno618](gpu/adreno618/README.md): it validates platform-supplied identity and resource descriptors and has host-only tests. It does not initialize the GPU or provide hardware acceleration. The [Adreno 618 hardware research](../docs/architecture/ADRENO618_HARDWARE_RESEARCH.md) now inventories the HANOIP Linux GPU, GMU, IOMMU, firmware, clock and power evidence; it remains research only. See [STATUS.md](STATUS.md) for authoritative status.
+No HANOIP XNU hardware driver is verified as working. The first portable driver-core component is [HanoipAdreno618](gpu/adreno618/README.md): it validates platform-supplied identity and resource descriptors and has host-only tests. It does not initialize the GPU or provide hardware acceleration. The [Adreno 618 hardware research](../docs/architecture/ADRENO618_HARDWARE_RESEARCH.md) now inventories the HANOIP Linux GPU, GMU, IOMMU, firmware, clock and power evidence; it remains research only. The [HANOIP Wi-Fi research](../docs/architecture/HANOIP_WIFI_RESEARCH.md) records the Qualcomm CLD3/ICNSS stack and WLAN memory/signalling evidence. Exact radio silicon and transport remain unverified. See [STATUS.md](STATUS.md) for authoritative status.
 
 ## Organization
 
