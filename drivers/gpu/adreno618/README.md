@@ -2,61 +2,54 @@
 
 Original HackintoiOS driver core for the Moto G60's Adreno 618 GPU.
 
-## Implemented portable core
+## Portable lifecycle core
 
-The initial C module provides a host-testable lifecycle and validation layer:
+The initial C module provides a host-testable lifecycle and validation layer: verified Adreno 618 identity, resource-binding state checks, and clean detach/reset.
 
-- starts detached;
-- accepts an Adreno 618 identity only when the platform layer explicitly marks that identity as verified;
-- accepts a mapped resource only after identity and only when the platform layer marks the mapping as verified;
-- rejects wrong GPU models, unverified inputs, empty mappings, and invalid state transitions;
-- supports a clean detach/reset.
+## Phase 1: CPU-side memory objects
 
-## Phase 1: GPU memory-object abstraction
+The memory-object layer provides caller-owned buffers, power-of-two alignment validation, explicit read/write permissions, overflow-safe range checks, and single-view CPU map/unmap bookkeeping. It does not allocate or map hardware memory.
 
-The portable memory layer in `adreno618_memory.c` and `adreno618_memory.h` now provides:
+## Phase 1.5: platform allocator contract
 
-- caller-owned backing buffers (no hidden allocator or ownership transfer);
-- power-of-two base-alignment validation;
-- explicit read/write access permissions;
-- overflow-safe offset/length bounds checks;
-- a single active CPU-side view per object, with map/unmap state validation;
-- reset of descriptor metadata without freeing caller memory.
+`adreno618_allocator.c` and `adreno618_allocator.h` define a platform-supplied allocation interface:
 
-This is a CPU-side memory-object contract only. It deliberately does not invent physical addresses, DMA addresses, GPU virtual addresses, page tables, cache-coherency operations, or GPU mappings. Those require a verified platform memory manager and Adreno-specific evidence.
+- `allocate` requests a size and alignment and returns an opaque handle;
+- `map_cpu` requests a bounded CPU view with explicit access permissions;
+- `unmap_cpu` releases that view;
+- `release` releases the platform allocation;
+- failures are propagated without falsely changing object state;
+- destruction is rejected while a CPU view remains mapped;
+- range validation uses subtraction-based checks to avoid integer overflow.
+
+The platform implementation owns the backing allocation and must honor the requested size/alignment. The portable core never receives or fabricates physical, DMA, or GPU virtual addresses. It does not define GPU page tables, IOMMU configuration, cache-coherency policy, or GPU address-space layout. Those remain platform-specific evidence gates.
 
 ## Not implemented
 
-This is **not yet a functioning hardware GPU driver**. It does not access registers or perform GPU initialization, firmware loading, physical/DMA allocation, GPU page-table management, command submission, rendering, synchronization with hardware, interrupt handling, or power management. No XNU integration or Adreno hardware acceleration is claimed.
+This is **not yet a functioning hardware GPU driver**. It does not access registers, load firmware, allocate physical pages itself, create DMA/GPU mappings, manage GPU page tables, submit commands, render, synchronize with hardware, handle interrupts, or manage power. No XNU integration or Adreno hardware acceleration is claimed.
 
-The supplied backing store remains owned by the caller and must remain valid for the lifetime of the object and any active view. This portable layer is intended for interface development and host testing, not direct hardware operation.
+All tests use a synthetic host allocator. They validate the portable callback contract only, not HANOIP memory behavior or GPU operation.
 
-## Testing
+## Host tests
 
-Run both host-only test programs:
+GitHub Actions compiles and runs the lifecycle, memory-object, and allocator tests with strict C11 warnings:
 
 ```sh
-cc -std=c11 -Wall -Wextra -Werror -pedantic \
-  drivers/gpu/adreno618/adreno618.c \
-  drivers/gpu/adreno618/tests/test_adreno618.c \
-  -o /tmp/test-adreno618
+cc -std=c11 -Wall -Wextra -Werror -pedantic drivers/gpu/adreno618/adreno618.c drivers/gpu/adreno618/tests/test_adreno618.c -o /tmp/test-adreno618
 /tmp/test-adreno618
-
-cc -std=c11 -Wall -Wextra -Werror -pedantic \
-  drivers/gpu/adreno618/adreno618_memory.c \
-  drivers/gpu/adreno618/tests/test_adreno618_memory.c \
-  -o /tmp/test-adreno618-memory
+cc -std=c11 -Wall -Wextra -Werror -pedantic drivers/gpu/adreno618/adreno618_memory.c drivers/gpu/adreno618/tests/test_adreno618_memory.c -o /tmp/test-adreno618-memory
 /tmp/test-adreno618-memory
+cc -std=c11 -Wall -Wextra -Werror -pedantic drivers/gpu/adreno618/adreno618_allocator.c drivers/gpu/adreno618/tests/test_adreno618_allocator.c -o /tmp/test-adreno618-allocator
+/tmp/test-adreno618-allocator
 ```
 
-Tests use synthetic, caller-owned host buffers. They do not touch a GPU, create DMA mappings, or validate HANOIP hardware.
-
-## Next evidence gates
+## Evidence gates before hardware integration
 
 1. Resolve the exact GPU node and compatible strings from the merged HANOIP device tree.
 2. Establish the exact Adreno 618 revision and memory-management model from target-applicable public evidence.
-3. Identify the required firmware interface and permitted firmware source.
-4. Define verified platform allocation, mapping, cache-coherency, interrupt, clock, and power contracts.
-5. Only then add hardware-specific GPU memory mapping, command submission, and XNU integration.
+3. Identify the platform's real physical-memory allocator and DMA/IOMMU ownership model.
+4. Establish cache-maintenance and CPU/GPU synchronization requirements.
+5. Define GPU virtual address-space/page-table behavior from verified Adreno documentation or source.
+6. Only then add a hardware-backed memory manager, command submission, and XNU integration.
 
 HakiOS is an architectural reference only. This implementation is original and does not copy its Adreno 642L code or POCO X5 Pro hardware assumptions.
