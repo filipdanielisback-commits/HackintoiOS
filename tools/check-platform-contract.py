@@ -50,7 +50,7 @@ def validate(data: dict) -> list[str]:
 
     baseline = data.get("source_baseline", {})
     commit = baseline.get("commit")
-    if commit != "5b04fac0cb2a8311ae69e8644384426e838d91fe":
+    if commit != "5b04fac0cb2a8311ae69c8644384426e838d91fe":
         errors.append("source baseline must use the reviewed pinned kernel commit")
 
     facts = data.get("evidence_facts", [])
