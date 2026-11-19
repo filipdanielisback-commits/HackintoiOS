@@ -6,27 +6,26 @@ The organization takes inspiration from subsystem-based layouts such as HakiOS, 
 
 ## Current state
 
-No HANOIP XNU hardware driver is verified as working. The first portable driver-core component is [HanoipAdreno618](gpu/adreno618/README.md): it validates platform-supplied identity and resource descriptors and has host-only tests. It does not initialize the GPU or provide hardware acceleration. The [Adreno 618 hardware research](../docs/architecture/ADRENO618_HARDWARE_RESEARCH.md) now inventories the HANOIP Linux GPU, GMU, IOMMU, firmware, clock and power evidence; it remains research only. The [HANOIP Wi-Fi research](../docs/architecture/HANOIP_WIFI_RESEARCH.md) records the Qualcomm CLD3/ICNSS stack and WLAN memory/signalling evidence. Exact radio silicon and transport remain unverified. See [STATUS.md](STATUS.md) for authoritative status.
+No HANOIP XNU hardware driver is verified as working. The first portable driver component is [HanoipAdreno618](gpu/adreno618/README.md): it validates platform-supplied identity and resource descriptors and has host-only tests. It does not initialize the GPU or provide hardware acceleration. The [Adreno 618 hardware research](../docs/architecture/ADRENO618_HARDWARE_RESEARCH.md) inventories Linux GPU, GMU, IOMMU, firmware, clock and power evidence; it remains research only. The [HANOIP Wi-Fi research](../docs/architecture/HANOIP_WIFI_RESEARCH.md) records the Qualcomm CLD3/ICNSS stack and WLAN memory/signalling evidence. Exact radio silicon and transport remain unverified. See [STATUS.md](STATUS.md) for authoritative status.
 
-## Organization
+## Directory map
 
 | Path | Responsibility |
 |---|---|
+| `core/` | Planned device-neutral driver lifecycle and shared interfaces |
 | `platform/` | Evidence-backed platform contract and future loader-to-kernel handoff |
-| `gpu/adreno618/` | Adreno 618 driver core and future HANOIP GPU integration |
-| `qualcomm/sm7150/` | Verified Qualcomm SoC-wide support only |
-| `motorola/hanoip/` | Moto G60 board-specific configuration and glue |
-| `console/` | Early serial/debug console |
-| `interrupts/` | Interrupt-controller integration |
-| `timer/` | Architectural timer integration |
-| `storage/` | Read-only storage discovery and storage interfaces |
-| `display/` | Framebuffer/display integration |
-| `input/` | Touchscreen and input |
-| `connectivity/` | Wi-Fi and Bluetooth |
-| `audio/` | Audio interfaces |
-| `camera/` | Camera sensors and ISP interfaces |
-| `sensors/` | Motion and environmental sensors |
+| `gpu/adreno618/` | Adreno 618 foundations and future HANOIP GPU integration |
+| `wifi/`, `bluetooth/`, `net/` | Wireless-device research and future network integration |
+| `audio/`, `camera/`, `display/` | Multimedia hardware support |
+| `input/`, `haptic/`, `sensors/` | User input and sensor devices |
+| `storage/` | Storage discovery and storage interfaces |
 | `power/` | PMIC, battery, thermal, and power interfaces |
+| `console/`, `interrupts/`, `timer/` | Early platform services |
+| `modem/` | Modem-facing research and possible platform interfaces |
+| `qualcomm/sm7150/` | Shared Qualcomm SoC-family layer, only for verified common behavior |
+| `motorola/hanoip/` | Moto G60/HANOIP board-specific configuration and glue |
+
+Subsystem directories begin with evidence and design notes. A README is not a driver implementation.
 
 ## Implementation sequence
 
@@ -44,4 +43,5 @@ Each driver must record its hardware source, supported board revision, build res
 - [HANOIP platform contract](platform/README.md)
 - [HANOIP resource inventory](../docs/architecture/HANOIP_RESOURCE_INVENTORY.md)
 - [HANOIP kernel plan](../docs/architecture/HANOIP_KERNEL_PLAN.md)
+- [Repository architecture map](../docs/architecture/REPOSITORY_LAYOUT.md)
 - [Overall porting plan](../docs/architecture/PORTING_PLAN.md)
