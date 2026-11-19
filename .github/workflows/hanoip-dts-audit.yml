@@ -37,7 +37,7 @@ jobs:
 
       - name: Fetch pinned community kernel sources
         env:
-          KERNEL_COMMIT: 5b04fac0cb2a8311ae69e8644384426e838d91fe
+          KERNEL_COMMIT: 5b04fac0cb2a8311ae69c8644384426e838d91fe
         run: |
           git init kernel-src
           git -C kernel-src remote add origin https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150.git
@@ -49,7 +49,7 @@ jobs:
           mkdir -p build
           python tools/audit-hanoip-dts.py \
             --source kernel-src \
-            --source-commit 5b04fac0cb2a8311ae69e8644384426e838d91fe \
+            --source-commit 5b04fac0cb2a8311ae69c8644384426e838d91fe \
             --output build/hanoip-dts-inventory.json
 
       - name: Upload evidence inventory
