@@ -2,13 +2,21 @@
 
 This is the authoritative status list for HackintoiOS driver work on the Moto G60 Vision (XT2135-2, HANOIP).
 
-**Current result: no HANOIP XNU hardware driver is implemented and verified as working.** The project has Linux reference-source evidence and research scaffolding, not functioning XNU drivers.
+**Current result: no HANOIP XNU hardware driver is implemented and verified as working.** The project has Linux reference-source evidence, a machine-checked platform evidence contract, and research scaffolding—not functioning XNU drivers.
 
 ## Working
 
 _None yet._
 
 A driver may move here only when its implementation is present in this repository, builds in the relevant XNU configuration, and has a recorded test result. The test environment must be stated explicitly: host test, QEMU, or exact physical target. A source audit or successful Linux build is not a driver test.
+
+## Foundation artifacts (not drivers)
+
+| Artifact | Status | What it proves |
+|---|---|---|
+| HANOIP device-tree source audit | Research tooling | Audits pinned source files and quoted-include closure; does not compile/merge a DTB |
+| HANOIP platform contract | Evidence-only; CI-validated when workflow passes | Records source observations and keeps runtime values unresolved; does not initialize hardware |
+| ARM64 UEFI console prototype | QEMU-oriented prototype | Exercises a UEFI application path; does not prove HANOIP firmware support or XNU handoff |
 
 ## Not yet implemented / not validated
 
@@ -46,7 +54,7 @@ The pinned Linux reference source provides useful clues, but none of these is an
 - Shared tree aliases `serial0` to `qupv3_se8_2uart`; this does not prove it is enabled/usable at custom-kernel handoff.
 - Linux HANOIP configuration and module lists provide subsystem clues, but do not establish XNU compatibility or exact component identity.
 
-See [HANOIP resource inventory](../docs/architecture/HANOIP_RESOURCE_INVENTORY.md), [HANOIP kernel plan](../docs/architecture/HANOIP_KERNEL_PLAN.md), and [device profile](../devices/moto-g60-xt2135-2/README.md).
+See [HANOIP platform contract](platform/README.md), [HANOIP resource inventory](../docs/architecture/HANOIP_RESOURCE_INVENTORY.md), [HANOIP kernel plan](../docs/architecture/HANOIP_KERNEL_PLAN.md), and [device profile](../devices/moto-g60-xt2135-2/README.md).
 
 ## Status rules
 
