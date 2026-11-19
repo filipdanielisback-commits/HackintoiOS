@@ -53,3 +53,8 @@ cc -std=c11 -Wall -Wextra -Werror -pedantic drivers/gpu/adreno618/adreno618_allo
 6. Only then add a hardware-backed memory manager, command submission, and XNU integration.
 
 HakiOS is an architectural reference only. This implementation is original and does not copy its Adreno 642L code or POCO X5 Pro hardware assumptions.
+
+
+## Hardware research
+
+See [Adreno 618 HANOIP hardware research](../../../docs/architecture/ADRENO618_HARDWARE_RESEARCH.md) for source-backed GPU, GMU, firmware, IOMMU, clock and power evidence, plus the unresolved gates before hardware initialization. The inventory is research only; none of its Linux device-tree values are an XNU runtime configuration.
