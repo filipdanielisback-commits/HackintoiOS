@@ -26,7 +26,7 @@ The repository now includes:
 - `xnu-build.sh --print-env`: print environment settings without compiling.
 - `xnu-build.sh --check`: verify the pinned source checkout and explicit SDK/configuration inputs.
 - `xnu-build.sh --dry-run`: show the make command after preflight.
-- `XNU_BUILD_ENABLE=1 ./xnu-build.sh`: explicit opt-in to invoke upstream `make`.
+- `XNU_BUILD_ENABLE=1 bash xnu-build.sh`: explicit opt-in to invoke upstream `make`.
 
 The wrappers are original scaffolding inspired by the role of HakiOS's scripts; they do not copy HakiOS's device-specific build flags or dependency setup. They do not fetch source or SDKs, and they do not assume a HANOIP machine configuration. No HANOIP XNU target has been implemented or validated. CI checks shell syntax and guard behavior only; it does **not** compile XNU.
 
