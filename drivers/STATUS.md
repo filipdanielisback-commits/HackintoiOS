@@ -2,13 +2,19 @@
 
 This is the authoritative status list for HackintoiOS driver work on the Moto G60 Vision (XT2135-2, HANOIP).
 
-**Current result: no HANOIP XNU hardware driver is implemented and verified as working.** The project has Linux reference-source evidence, a machine-checked platform evidence contract, and research scaffolding—not functioning XNU drivers.
+**Current result: no HANOIP XNU hardware driver is implemented and verified as working.** One original, portable Adreno 618 driver-core component now exists and has host-test coverage; it is not a hardware GPU driver.
 
-## Working
+## Partial implementations
+
+| Driver | Code | Verified behavior | Limitations |
+|---|---|---|---|
+| HanoipAdreno618 core | [adreno618.c](gpu/adreno618/adreno618.c), [header](gpu/adreno618/adreno618.h) | Host tests cover lifecycle, identity rejection, resource validation, and state transitions | No MMIO, firmware, GPU initialization, rendering, XNU integration, QEMU GPU, or phone hardware test |
+
+## Working hardware drivers
 
 _None yet._
 
-A driver may move here only when its implementation is present in this repository, builds in the relevant XNU configuration, and has a recorded test result. The test environment must be stated explicitly: host test, QEMU, or exact physical target. A source audit or successful Linux build is not a driver test.
+A hardware driver may move here only when its implementation is present, builds in the relevant XNU configuration, and has a recorded hardware or faithful device-model test. State the test environment explicitly: host test, QEMU, or exact physical target. A source audit or successful Linux build is not a driver test.
 
 ## Foundation artifacts (not drivers)
 
@@ -30,7 +36,7 @@ A driver may move here only when its implementation is present in this repositor
 | Serial / debug console | Not implemented | Verify the actual console device and boot-time availability |
 | UFS storage | Not implemented | Confirm controller, clocks, power dependencies, and a read-only discovery interface |
 | Display / framebuffer | Not implemented | Identify the panel/controller and define a safe framebuffer handoff |
-| Adreno GPU | Not implemented | Establish GPU identity, firmware requirements, and a permitted driver interface |
+| Adreno GPU hardware path | Not implemented | Establish exact GPU revision, firmware requirements, register/resource map, and permitted driver interface |
 | Touchscreen / input | Not implemented | Confirm the exact controller and its bus/interrupt wiring |
 | Wi-Fi | Not implemented | Identify the exact radio and firmware/interface requirements |
 | Bluetooth | Not implemented | Identify the exact radio and transport |
