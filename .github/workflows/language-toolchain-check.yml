@@ -1,0 +1,46 @@
+name: Language toolchain checks
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "docs/development/LANGUAGE_POLICY.md"
+      - "userland/c/**"
+      - "userland/cpp/**"
+      - "userland/objc/**"
+      - ".github/workflows/language-toolchain-check.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  compile:
+    name: Compile C, C++ and Objective-C syntax
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Clang
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang
+
+      - name: Compile and run C++17 smoke test
+        run: |
+          set -euo pipefail
+          clang++ -std=c++17 -Wall -Wextra -Werror -pedantic \
+            userland/cpp/language-smoke.cpp -o /tmp/hackintoios-cpp-smoke
+          /tmp/hackintoios-cpp-smoke
+
+      - name: Check Objective-C syntax only
+        run: |
+          set -euo pipefail
+          clang -x objective-c -fsyntax-only -Wall -Wextra -Werror \
+            userland/objc/language-smoke.m
+
+      - name: Run existing C userland smoke test
+        run: |
+          set -euo pipefail
+          sh userland/build.sh
+          ./build-output/userland/hackintoios-hello
