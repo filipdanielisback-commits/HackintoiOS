@@ -9,10 +9,10 @@ source "$SCRIPT_DIR/xnu-env.sh"
 usage() {
     cat <<'EOF'
 Usage:
-  ./xnu-build.sh --print-env
-  ./xnu-build.sh --check
-  ./xnu-build.sh --dry-run [make arguments...]
-  XNU_BUILD_ENABLE=1 ./xnu-build.sh [make arguments...]
+  bash xnu-build.sh --print-env
+  bash xnu-build.sh --check
+  bash xnu-build.sh --dry-run [make arguments...]
+  XNU_BUILD_ENABLE=1 bash xnu-build.sh [make arguments...]
 
 Required for a real build:
   XNU_SRC             checked-out public XNU source tree
