@@ -1,0 +1,39 @@
+name: HANOIP platform contract checks
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "drivers/platform/**"
+      - "tools/check-platform-contract.py"
+      - "tools/test-platform-contract.py"
+      - ".github/workflows/hanoip-platform-contract.yml"
+  pull_request:
+    paths:
+      - "drivers/platform/**"
+      - "tools/check-platform-contract.py"
+      - "tools/test-platform-contract.py"
+      - ".github/workflows/hanoip-platform-contract.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate evidence-only HANOIP platform contract
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out HackintoiOS
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Run contract validator
+        run: python tools/check-platform-contract.py
+
+      - name: Run synthetic safety tests
+        run: python tools/test-platform-contract.py
