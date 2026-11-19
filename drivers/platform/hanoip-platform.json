@@ -11,7 +11,7 @@
   "source_baseline": {
     "repository": "motorola-sm6150-devs/android_kernel_motorola_sm6150",
     "branch": "lineage-20",
-    "commit": "5b04fac0cb2a8311ae69e8644384426e838d91fe",
+    "commit": "5b04fac0cb2a8311ae69c8644384426e838d91fe",
     "source_scope": "Linux device-tree source observations; not XNU configuration"
   },
   "evidence_facts": [
@@ -21,7 +21,7 @@
       "claim": "The shared SoC device tree declares the SDMMAGPIE compatible.",
       "observed_value": "qcom,sdmmagpie",
       "source_path": "arch/arm64/boot/dts/qcom/sdmmagpie.dtsi",
-      "source_url": "https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/blob/5b04fac0cb2a8311ae69e8644384426e838d91fe/arch/arm64/boot/dts/qcom/sdmmagpie.dtsi",
+      "source_url": "https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/blob/5b04fac0cb2a8311ae69c8644384426e838d91fe/arch/arm64/boot/dts/qcom/sdmmagpie.dtsi",
       "confidence": "verified_in_pinned_source",
       "target_applicability": "shared_tree_not_exact_unit",
       "runtime_use_allowed": false
@@ -32,7 +32,7 @@
       "claim": "The HANOIP engineering overlays declare the HANOIP model.",
       "observed_value": "hanoip",
       "source_path": "arch/arm64/boot/dts/qcom/sdmmagpie-hanoip-evt1-overlay.dts; dvt1 and dvt2 overlays",
-      "source_url": "https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/tree/5b04fac0cb2a8311ae69e8644384426e838d91fe/arch/arm64/boot/dts/qcom",
+      "source_url": "https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/tree/5b04fac0cb2a8311ae69c8644384426e838d91fe/arch/arm64/boot/dts/qcom",
       "confidence": "verified_in_pinned_source",
       "target_applicability": "family_level_exact_overlay_unknown",
       "runtime_use_allowed": false
@@ -43,7 +43,7 @@
       "claim": "The HANOIP overlays declare Qualcomm MSM platform ID 365.",
       "observed_value": "365",
       "source_path": "arch/arm64/boot/dts/qcom/sdmmagpie-hanoip-*-overlay.dts",
-      "source_url": "https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/tree/5b04fac0cb2a8311ae69e8644384426e838d91fe/arch/arm64/boot/dts/qcom",
+      "source_url": "https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/tree/5b04fac0cb2a8311ae69c8644384426e838d91fe/arch/arm64/boot/dts/qcom",
       "confidence": "verified_in_pinned_source",
       "target_applicability": "family_level_not_xnu_identifier",
       "runtime_use_allowed": false
@@ -58,7 +58,7 @@
         "dvt2"
       ],
       "source_path": "arch/arm64/boot/dts/qcom/Makefile",
-      "source_url": "https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/blob/5b04fac0cb2a8311ae69e8644384426e838d91fe/arch/arm64/boot/dts/qcom/Makefile",
+      "source_url": "https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/blob/5b04fac0cb2a8311ae69c8644384426e838d91fe/arch/arm64/boot/dts/qcom/Makefile",
       "confidence": "verified_in_pinned_source",
       "target_applicability": "exact_xt2135_2_variant_unknown",
       "runtime_use_allowed": false
@@ -69,7 +69,7 @@
       "claim": "The shared SoC device tree describes ARMv8 CPU nodes using a PSCI enable method.",
       "observed_value": "psci",
       "source_path": "arch/arm64/boot/dts/qcom/sdmmagpie.dtsi",
-      "source_url": "https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/blob/5b04fac0cb2a8311ae69e8644384426e838d91fe/arch/arm64/boot/dts/qcom/sdmmagpie.dtsi",
+      "source_url": "https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/blob/5b04fac0cb2a8311ae69c8644384426e838d91fe/arch/arm64/boot/dts/qcom/sdmmagpie.dtsi",
       "confidence": "verified_in_pinned_source",
       "target_applicability": "firmware_handoff_unverified",
       "runtime_use_allowed": false
@@ -80,7 +80,7 @@
       "claim": "The shared SoC device tree sets the interrupt parent to the PDC node.",
       "observed_value": "pdc",
       "source_path": "arch/arm64/boot/dts/qcom/sdmmagpie.dtsi",
-      "source_url": "https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/blob/5b04fac0cb2a8311ae69e8644384426e838d91fe/arch/arm64/boot/dts/qcom/sdmmagpie.dtsi",
+      "source_url": "https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/blob/5b04fac0cb2a8311ae69c8644384426e838d91fe/arch/arm64/boot/dts/qcom/sdmmagpie.dtsi",
       "confidence": "verified_in_pinned_source",
       "target_applicability": "routing_and_runtime_instance_unverified",
       "runtime_use_allowed": false
@@ -91,7 +91,7 @@
       "claim": "The shared SoC device tree aliases serial0 to the QUPv3 SE8 UART node.",
       "observed_value": "qupv3_se8_2uart",
       "source_path": "arch/arm64/boot/dts/qcom/sdmmagpie.dtsi",
-      "source_url": "https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/blob/5b04fac0cb2a8311ae69e8644384426e838d91fe/arch/arm64/boot/dts/qcom/sdmmagpie.dtsi",
+      "source_url": "https://github.com/motorola-sm6150-devs/android_kernel_motorola_sm6150/blob/5b04fac0cb2a8311ae69c8644384426e838d91fe/arch/arm64/boot/dts/qcom/sdmmagpie.dtsi",
       "confidence": "verified_in_pinned_source",
       "target_applicability": "enabled_state_and_loader_handoff_unverified",
       "runtime_use_allowed": false
