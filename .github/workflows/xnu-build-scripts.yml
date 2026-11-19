@@ -21,8 +21,11 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Check shell syntax
-        run: bash -n xnu-env.sh xnu-build.sh
+      - name: Check environment shell syntax
+        run: bash -n xnu-env.sh
+
+      - name: Check build wrapper shell syntax
+        run: bash -n xnu-build.sh
 
       - name: Check environment output
         run: |
