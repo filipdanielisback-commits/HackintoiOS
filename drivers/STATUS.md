@@ -23,6 +23,7 @@ A hardware driver may move here only when its implementation is present, builds 
 | Artifact | Status | What it proves |
 |---|---|---|
 | Adreno 618 hardware inventory | Research only | Records Linux-source GPU/GMU/IOMMU/clock/firmware evidence; does not establish XNU mappings or acceleration |
+| HANOIP Wi-Fi hardware inventory | Research only | Confirms Qualcomm CLD3/ICNSS Linux stack and WLAN reserved-memory/signalling evidence; exact radio and transport remain unknown |
 | HANOIP device-tree source audit | Research tooling | Audits pinned source files and quoted-include closure; does not compile/merge a DTB |
 | HANOIP platform contract | Evidence-only; CI-validated when workflow passes | Records source observations and keeps runtime values unresolved; does not initialize hardware |
 | ARM64 UEFI console prototype | QEMU-oriented prototype | Exercises a UEFI application path; does not prove HANOIP firmware support or XNU handoff |
