@@ -56,5 +56,6 @@ Next, recursively inspect the HANOIP common overlay and all included SoC/board f
 ## Relationship to the port
 
 - [HANOIP XNU kernel work plan](HANOIP_KERNEL_PLAN.md)
+- [Adreno 618 hardware research](ADRENO618_HARDWARE_RESEARCH.md)
 - [Overall porting plan](PORTING_PLAN.md)
 - [XNU version mapping](../xnu/ios-18.7.12-version.md)
